@@ -6,12 +6,10 @@
   <title>Kos baik.com - Sistem Laporan Harian</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-  <!-- Library untuk membuat PDF dari JavaScript -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <!-- html2canvas dibutuhkan jika ingin mengkonversi elemen HTML kompleks ke PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <style>
@@ -28,14 +26,14 @@
       --gray: #95a5a6;
       --border: #bdc3c7;
     }
-    
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       font-family: 'Inter', sans-serif;
     }
-    
+
     body {
       background: linear-gradient(135deg, #3498db 0%, #8e44ad 100%);
       color: #333;
@@ -46,7 +44,7 @@
       justify-content: center;
       align-items: center;
     }
-    
+
     .app-container {
       max-width: 1200px;
       margin: 0 auto;
@@ -65,7 +63,7 @@
         height: 100%;
         margin: auto;
     }
-    
+
     /* Login Screen Styles */
     .login-container {
         background: white;
@@ -139,13 +137,13 @@
       align-items: center;
       position: relative;
     }
-    
+
     .logo {
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    
+
     .logo-icon {
       background: var(--primary);
       width: 40px;
@@ -156,22 +154,22 @@
       justify-content: center;
       font-size: 20px;
     }
-    
+
     .logo-text {
       font-size: 20px;
       font-weight: 700;
     }
-    
+
     .logo-text span {
       color: var(--secondary);
     }
-    
+
     .user-info {
       display: flex;
       align-items: center;
       gap: 15px; /* Increased gap */
     }
-    
+
     .user-avatar {
       width: 36px;
       height: 36px;
@@ -221,7 +219,7 @@
       background: var(--dark);
       color: white;
     }
-    
+
     /* Navigation */
     nav {
       background: var(--primary);
@@ -229,12 +227,12 @@
       overflow-x: auto;
       white-space: nowrap;
     }
-    
+
     .nav-tabs {
       display: flex;
       list-style: none;
     }
-    
+
     .nav-tabs li {
       padding: 12px 15px;
       cursor: pointer;
@@ -244,20 +242,20 @@
       font-size: 14px;
       color: white;
     }
-    
+
     .nav-tabs li.active {
       background: rgba(255, 255, 255, 0.2);
       border-bottom: 3px solid var(--secondary);
     }
-    
+
     .nav-tabs li:hover:not(.active) {
       background: rgba(255, 255, 255, 0.1);
     }
-    
+
     .nav-tabs i {
       margin-right: 5px;
     }
-    
+
     /* Main Content */
     .main-content {
       padding: 20px;
@@ -265,21 +263,21 @@
       grid-template-columns: 1fr;
       gap: 20px;
     }
-    
+
     .content-section {
       display: none;
     }
-    
+
     .content-section.active {
       display: block;
       animation: fadeIn 0.5s ease;
     }
-    
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    
+
     .card {
       background: white;
       border-radius: 12px;
@@ -287,7 +285,7 @@
       padding: 20px;
       margin-bottom: 20px;
     }
-    
+
     .card-title {
       font-size: 18px;
       color: var(--dark);
@@ -298,18 +296,18 @@
       align-items: center;
       gap: 8px;
     }
-    
+
     .card-title i {
       color: var(--primary);
       font-size: 18px;
     }
-    
+
     /* Form Styles */
     .form-group {
       margin-bottom: 15px;
       position: relative; /* For error messages */
     }
-    
+
     label {
       display: block;
       margin-bottom: 6px;
@@ -320,7 +318,7 @@
       gap: 6px;
       font-size: 14px;
     }
-    
+
     select, input, textarea {
       width: 100%;
       padding: 12px;
@@ -329,7 +327,7 @@
       font-size: 14px;
       transition: all 0.3s;
     }
-    
+
     select:focus, input:focus, textarea:focus {
       outline: none;
       border-color: var(--primary);
@@ -340,7 +338,7 @@
       border-color: var(--danger);
       box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
     }
-    
+
     .error-message {
       color: var(--danger);
       font-size: 12px;
@@ -352,7 +350,7 @@
       min-height: 120px;
       resize: vertical;
     }
-    
+
     .btn {
       padding: 12px 20px;
       border: none;
@@ -366,30 +364,30 @@
       justify-content: center;
       gap: 6px;
     }
-    
+
     .btn-primary {
       background: var(--primary);
       color: white;
     }
-    
+
     .btn-primary:hover {
       background: var(--primary-dark);
     }
-    
+
     .btn-success {
       background: var(--secondary);
       color: white;
     }
-    
+
     .btn-success:hover {
       background: var(--secondary-dark);
     }
-    
+
     .btn-danger {
       background: var(--danger);
       color: white;
     }
-    
+
     .btn-danger:hover {
       background: var(--danger-dark);
     }
@@ -402,7 +400,7 @@
     .btn-warning:hover {
       background: #e67e22;
     }
-    
+
     /* Report History */
     .history-filters {
         display: flex;
@@ -430,7 +428,7 @@
         align-self: flex-start; /* Align buttons with filters */
         margin-top: 22px; /* Adjust as needed for alignment */
     }
-    
+
     .history-item {
       padding: 15px;
       border: 1px solid var(--border);
@@ -440,13 +438,13 @@
       transition: all 0.3s;
       position: relative;
     }
-    
+
     .history-item:hover {
       transform: translateY(-3px);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
       border-color: var(--primary);
     }
-    
+
     .report-header {
       display: flex;
       justify-content: space-between;
@@ -455,20 +453,20 @@
       padding-bottom: 10px;
       border-bottom: 1px solid #eee;
     }
-    
+
     .report-meta {
       display: flex;
       gap: 10px;
       color: var(--gray);
       font-size: 12px;
     }
-    
+
     .report-meta span {
       display: flex;
       align-items: center;
       gap: 4px;
     }
-    
+
     .report-actions {
       position: absolute;
       top: 15px;
@@ -476,7 +474,7 @@
       display: flex;
       gap: 8px;
     }
-    
+
     .action-btn {
       width: 28px;
       height: 28px;
@@ -490,23 +488,23 @@
       transition: all 0.3s;
       font-size: 12px;
     }
-    
+
     .action-btn:hover {
       background: var(--primary);
       color: white;
     }
-    
+
     .report-content {
       line-height: 1.6;
       font-size: 14px;
     }
-    
+
     .empty-state {
       text-align: center;
       padding: 30px 15px;
       color: var(--gray);
     }
-    
+
     .empty-state i {
       font-size: 40px;
       margin-bottom: 12px;
@@ -523,7 +521,7 @@
       font-size: 24px;
       margin-bottom: 10px;
     }
-    
+
     /* Toast Notification */
     .toast-notification {
       position: fixed;
@@ -557,7 +555,7 @@
     .notification-item:last-child {
       border-bottom: none;
     }
-    
+
     /* Download PDF Section Specific Styles */
     .download-controls { /* Changed from print-controls */
         display: flex;
@@ -610,7 +608,7 @@
         height: 300px; /* Fixed height for charts */
         margin-bottom: 20px;
     }
-    
+
     /* Footer */
     footer {
       background: var(--dark);
@@ -632,46 +630,46 @@
       border: 1px solid var(--border);
       display: none; /* Hidden by default */
     }
-    
+
     /* Responsive Design */
     @media (min-width: 768px) {
       .main-content {
         grid-template-columns: 1fr 300px;
       }
     }
-    
+
     @media (max-width: 600px) {
       .nav-tabs li span {
         display: none;
       }
-      
+
       .nav-tabs li i {
         margin-right: 0;
         font-size: 16px;
       }
-      
+
       .history-controls {
         flex-direction: column;
       }
-      
+
       .report-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
       }
-      
+
       .report-meta {
         flex-wrap: wrap;
       }
-      
+
       .logo-text {
         font-size: 18px;
       }
-      
+
       .user-info {
         font-size: 14px;
       }
-      
+
       .user-avatar {
         width: 32px;
         height: 32px;
@@ -713,7 +711,6 @@
   </style>
 </head>
 <body>
-  <!-- Login Container -->
   <div class="login-container" id="loginContainer">
     <h2><i class="fas fa-lock" style="color: var(--primary);"></i> Login KosBaik.com</h2>
     <div class="form-group">
@@ -736,7 +733,6 @@
     <button id="loginButton">Login</button>
   </div>
 
-  <!-- Main Application Wrapper (Initially hidden) -->
   <div class="main-app-wrapper" id="mainAppWrapper">
     <div class="app-container">
       <header>
@@ -745,16 +741,14 @@
           <div class="logo-text">Kos <span>baik.com</span></div>
         </div>
         <div class="user-info">
-          <!-- Display logged in user name -->
           <div class="user-avatar" id="header-avatar">-</div>
           <div class="user-name-display" id="loggedInUserName"></div>
-          <!-- Logout button -->
           <button id="logoutButton" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-          <!-- Original user select (now hidden, logic handled by login) -->
           <select id="currentUser" class="user-select">
             <option value="">Pilih Pengurus</option>
             <option>Happy</option>
-            <option>Tomi</            <option>Indra</option>
+            <option>Tomi</option>
+            <option>Indra</option>
             <option>Afi</option>
             <option>Amanda</option>
             <option>Nurul</option>
@@ -820,8 +814,7 @@
                 </div>
                 <div class="form-group">
                   <label for="nama"><i class="fas fa-user"></i> Nama Pengurus:</label>
-                  <select id="nama" required disabled> <!-- Disabled as it will be set by login -->
-                    <option value="">Pilih Pengurus</option>
+                  <select id="nama" required disabled> <option value="">Pilih Pengurus</option>
                     <option>Happy</option>
                     <option>Tomi</option>
                     <option>Indra</option>
@@ -955,17 +948,6 @@
                       <p style="color: var(--danger); font-size: 12px; margin-top: 5px;">*Tindakan ini akan menghapus SEMUA laporan dari SEMUA pengurus dan tidak dapat dibatalkan!</p>
                   </div>
               </div>
-              <div class="card" style="margin-top: 20px;">
-                  <h2 class="card-title"><i class="fas fa-exclamation-circle"></i> Catatan Penting: Notifikasi Eksternal</h2>
-                  <p style="font-size: 14px; line-height: 1.5; color: var(--dark);">
-                      Aplikasi ini berjalan sepenuhnya di browser (sisi klien), sehingga <strong>tidak dapat secara langsung mengirim notifikasi ke email atau WhatsApp</strong>.
-                      Untuk fungsionalitas pengiriman notifikasi laporan harian secara otomatis ke
-                      <strong style="color: var(--primary-dark);">afifirdaus1122@gmail.com</strong> dan WhatsApp
-                      <strong style="color: var(--primary-dark);">085289691249</strong>,
-                      dibutuhkan integrasi dengan sistem backend (server) dan layanan API eksternal.
-                      Fungsi yang ada saat ini hanya mencatat laporan secara lokal di browser Anda.
-                  </p>
-              </div>
           </section>
 
         </div>
@@ -1001,57 +983,55 @@
     // --- Data Management ---
     // laporanRiwayat sekarang adalah objek yang menyimpan laporan per user
     let laporanRiwayat = JSON.parse(localStorage.getItem('laporanRiwayat')) || {};
-    
-    let loggedInUser = localStorage.getItem('loggedInUser'); // Store logged in user
 
-    let editingReportId = null; 
-    let monthlyReportsChartInstance = null; // Variable to hold the Chart.js instance
-
-    // --- User Passwords (Predefined) ---
-    // Nama-nama pengurus dan password sudah didefinisikan di sini.
-    // Pastikan daftar di HTML <select> sesuai dengan ini.
-    const userPasswords = {
-        'Happy': 'kosbaik1',
-        'Tomi': 'kosbaik2',
-        'Indra': 'kosbaik3',
-        'Afi': 'kosbaik4',
-        'Amanda': 'kosbaik5',
-        'Nurul': 'kosbaik6'
+    // users - predefined users with their passwords
+    const users = {
+        "Happy": "Happy123",
+        "Tomi": "Tomi123",
+        "Indra": "Indra123",
+        "Afi": "Afi123",
+        "Amanda": "Amanda123",
+        "Nurul": "Nurul123"
     };
 
-    // --- HTML Elements ---
-    // Login elements
+    let loggedInUser = localStorage.getItem('loggedInUser'); // Store logged in user
+
+    let editingReportId = null;
+    let monthlyReportsChartInstance = null; // Variable to hold the Chart.js instance
+
+    // --- DOM Elements ---
     const loginContainer = document.getElementById('loginContainer');
     const loginUsernameSelect = document.getElementById('loginUsername');
     const loginPasswordInput = document.getElementById('loginPassword');
     const loginButton = document.getElementById('loginButton');
-    const loginErrorDisplay = document.getElementById('loginError');
-    const mainAppWrapper = document.getElementById('mainAppWrapper');
+    const loginError = document.getElementById('loginError');
 
-    // Header elements
+    const mainAppWrapper = document.getElementById('mainAppWrapper');
     const headerAvatar = document.getElementById('header-avatar');
     const loggedInUserNameDisplay = document.getElementById('loggedInUserName');
     const logoutButton = document.getElementById('logoutButton');
-    const currentUserSelect = document.getElementById('currentUser'); // Hidden, but still needed for options
 
-    // Navigation
     const navTabs = document.querySelectorAll('.nav-tabs li');
     const contentSections = document.querySelectorAll('.content-section');
 
-    // Report Form elements
     const reportForm = document.getElementById('reportForm');
-    const tanggalInput = document.getElementById('tanggal');
-    const namaField = document.getElementById('nama'); // This will be pre-filled after login
-    const jamKerjaInput = document.getElementById('jamKerja');
-    const keteranganInput = document.getElementById('keterangan');
+    const tanggalField = document.getElementById('tanggal');
+    const namaField = document.getElementById('nama');
+    const jamKerjaField = document.getElementById('jamKerja');
+    const keteranganField = document.getElementById('keterangan');
     const fotoLaporanInput = document.getElementById('fotoLaporan');
     const imagePreview = document.getElementById('imagePreview');
     const submitReportBtn = document.getElementById('submitReportBtn');
     const cancelEditBtn = document.getElementById('cancelEditBtn');
-    const reportIdToEditField = document.getElementById('reportIdToEdit');
+    const reportIdToEdit = document.getElementById('reportIdToEdit');
 
-    // Report History elements
     const riwayatLaporanContainer = document.getElementById('riwayat-laporan-container');
+    const dashboardTotalReports = document.getElementById('dashboard-total-reports');
+    const dashboardTotalHours = document.getElementById('dashboard-total-hours');
+    const dashboardLastReport = document.getElementById('dashboard-last-report');
+    const recentActivityContainer = document.getElementById('recent-activity-container');
+    const notificationsContainer = document.getElementById('notifications-container');
+
     const historyStartDate = document.getElementById('historyStartDate');
     const historyEndDate = document.getElementById('historyEndDate');
     const searchKeyword = document.getElementById('searchKeyword');
@@ -1064,916 +1044,1022 @@
     const exportReportsCSVBtn = document.getElementById('exportReportsCSV');
     const deleteAllUserReportsBtn = document.getElementById('deleteAllUserReportsBtn');
 
-    // Download PDF section elements
-    const downloadPdfReportSection = document.getElementById('downloadPdfReportSection');
     const printStartDate = document.getElementById('printStartDate');
     const printEndDate = document.getElementById('printEndDate');
     const generatePrintBtn = document.getElementById('generatePrint');
     const downloadPdfButton = document.getElementById('downloadPdfButton');
     const pdfPreviewContainer = document.getElementById('pdf-preview-container');
 
-    // Settings elements
     const backupUserDataBtn = document.getElementById('backupUserDataBtn');
     const restoreInput = document.getElementById('restoreInput');
     const restoreUserDataBtn = document.getElementById('restoreUserDataBtn');
     const deleteAllReportsGlobalBtn = document.getElementById('deleteAllReportsGlobalBtn');
 
-    // Dashboard elements
-    const monthlyReportsChartCtx = document.getElementById('monthlyReportsChart').getContext('2d');
-    const notificationsContainer = document.getElementById('notifications-container');
-
-
-    // --- Utility Functions ---
-
-    function showToast(message, type = 'success') {
-      const toast = document.getElementById('toast-notification');
-      toast.textContent = message;
-      toast.className = `toast-notification show ${type}`;
-      setTimeout(() => {
-        toast.className = toast.className.replace('show', '');
-      }, 3000);
-    }
-
-    function capitalizeFirstLetter(string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
-    }
-
-    function generateUniqueId() {
-      return Date.now().toString(36) + Math.random().toString(36).substr(2);
-    }
-
-    function validateForm(form) {
-      let isValid = true;
-      const fields = form.querySelectorAll('[required]:not([disabled])'); // Only validate non-disabled fields
-      fields.forEach(field => {
-        const errorDisplay = document.getElementById(`${field.id}-error`);
-        if (!field.value) {
-          field.classList.add('error');
-          if (errorDisplay) errorDisplay.textContent = 'Harap isi bidang ini.';
-          isValid = false;
-        } else {
-          field.classList.remove('error');
-          if (errorDisplay) field.textContent = '';
-        }
-      });
-
-      // Specific validation for jamKerja
-      const jamKerjaVal = parseInt(jamKerjaInput.value);
-      if (jamKerjaInput.value && (jamKerjaVal < 1 || jamKerjaVal > 24)) {
-        jamKerjaInput.classList.add('error');
-        document.getElementById('jamKerja-error').textContent = 'Jam kerja harus antara 1 dan 24.';
-        isValid = false;
-      } else if (jamKerjaInput.value) {
-        jamKerjaInput.classList.remove('error');
-        document.getElementById('jamKerja-error').textContent = '';
-      }
-
-      return isValid;
-    }
-
-    function clearForm() {
-      reportForm.reset();
-      tanggalInput.value = ''; // Ensure date input is cleared properly
-      imagePreview.src = '#';
-      imagePreview.style.display = 'none';
-      submitReportBtn.textContent = 'Kirim Laporan';
-      submitReportBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Laporan';
-      cancelEditBtn.style.display = 'none';
-      editingReportId = null;
-      reportIdToEditField.value = '';
-      // Clear all error messages and classes
-      document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
-      document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
-    }
-
-    function saveLaporanRiwayat() {
-      localStorage.setItem('laporanRiwayat', JSON.stringify(laporanRiwayat));
-    }
-
-    function updateNotifications(message) {
-      const notificationItem = document.createElement('div');
-      notificationItem.className = 'notification-item';
-      notificationItem.innerHTML = `
-        <i class="fas fa-info-circle" style="color: var(--primary);"></i> ${message}
-        <span style="font-size: 0.8em; color: var(--gray); display: block; margin-top: 5px;">${new Date().toLocaleString('id-ID')}</span>
-      `;
-      if (notificationsContainer.querySelector('.empty-state-small')) {
-        notificationsContainer.innerHTML = '';
-      }
-      notificationsContainer.prepend(notificationItem);
-      while (notificationsContainer.children.length > 5) {
-        notificationsContainer.removeChild(notificationsContainer.lastChild);
-      }
-    }
-
-
-    // --- Dashboard Functions ---
-
-    function updateDashboard() {
-      if (!loggedInUser) return; // Only update if a user is logged in
-      // Access reports for the loggedInUser
-      const userReports = laporanRiwayat[loggedInUser] || [];
-
-      document.getElementById('dashboard-total-reports').textContent = userReports.length;
-
-      const totalHours = userReports.reduce((sum, report) => sum + parseInt(report.jamKerja || 0), 0);
-      document.getElementById('dashboard-total-hours').textContent = totalHours;
-
-      const lastReportElement = document.getElementById('dashboard-last-report');
-      if (userReports.length > 0) {
-        const latestReport = userReports.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))[0];
-        lastReportElement.textContent = new Date(latestReport.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-      } else {
-        lastReportElement.textContent = 'Belum ada';
-      }
-
-      renderMonthlyReportsChart(userReports);
-      renderRecentActivity(userReports);
-    }
-
-    function renderMonthlyReportsChart(reports) {
-      if (monthlyReportsChartInstance) {
-        monthlyReportsChartInstance.destroy(); // Destroy previous chart instance
-      }
-
-      const monthlyData = {};
-      reports.forEach(report => {
-        const date = new Date(report.tanggal);
-        const monthYear = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
-        if (!monthlyData[monthYear]) {
-          monthlyData[monthYear] = 0;
-        }
-        monthlyData[monthYear] += parseInt(report.jamKerja || 0);
-      });
-
-      const sortedMonths = Object.keys(monthlyData).sort();
-      const chartLabels = sortedMonths.map(monthYear => {
-        const [year, month] = monthYear.split('-');
-        const date = new Date(year, parseInt(month) - 1, 1);
-        return date.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
-      });
-      const chartData = sortedMonths.map(month => monthlyData[month]);
-
-      monthlyReportsChartInstance = new Chart(monthlyReportsChartCtx, {
-        type: 'bar',
-        data: {
-          labels: chartLabels,
-          datasets: [{
-            label: 'Total Jam Kerja',
-            data: chartData,
-            backgroundColor: getCssVariable('--primary'),
-            borderColor: getCssVariable('--primary-dark'),
-            borderWidth: 1,
-            borderRadius: 5,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: 'Jam Kerja (Jam)'
-              }
-            },
-            x: {
-              title: {
-                display: true,
-                text: 'Bulan'
-              }
-            }
-          },
-          plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  return `Jam Kerja: ${context.raw} jam`;
-                }
-              }
-            }
-          }
-        }
-      });
-    }
-
-    function getCssVariable(name) {
-      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-    }
-
-    function renderRecentActivity(reports) {
-      recentActivityContainer.innerHTML = '';
-      if (!loggedInUser) {
-        recentActivityContainer.innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-clipboard"></i>
-            <p>Belum ada laporan dari Anda.</p>
-          </div>
-        `;
-        return;
-      }
-      const userReports = laporanRiwayat[loggedInUser] || []; // Access reports for the loggedInUser
-
-      if (userReports.length === 0) {
-        recentActivityContainer.innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-clipboard"></i>
-            <p>Belum ada laporan dari Anda.</p>
-          </div>
-        `;
-        return;
-      }
-
-      const sortedReports = [...userReports].sort((a, b) => b.timestamp - a.timestamp).slice(0, 5); // Show top 5
-
-      sortedReports.forEach(report => {
-        const reportElement = document.createElement('div');
-        reportElement.className = 'history-item';
-        reportElement.innerHTML = `
-          <div class="report-header">
-            <div class="report-meta">
-              <span><i class="fas fa-calendar-alt"></i> ${new Date(report.tanggal).toLocaleDateString('id-ID')}</span>
-              <span><i class="fas fa-hourglass-half"></i> ${report.jamKerja} Jam</span>
-              <span><i class="fas fa-user"></i> ${report.nama}</span>
-            </div>
-          </div>
-          <div class="report-content">
-            <p>${report.keterangan}</p>
-            ${report.foto ? `<img src="${report.foto}" alt="Foto Laporan" style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 10px;">` : ''}
-          </div>
-        `;
-        recentActivityContainer.appendChild(reportElement);
-      });
-    }
-
-
-    // --- Report Form Functions ---
-
-    reportForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      if (!loggedInUser) {
-          showToast('Harap login terlebih dahulu.', 'danger');
-          return;
-      }
-      if (!validateForm(reportForm)) {
-        showToast('Harap lengkapi semua bidang yang wajib diisi.', 'danger');
-        return;
-      }
-
-      const tanggal = tanggalInput.value;
-      const nama = loggedInUser; // Use the logged in user
-      const jamKerja = jamKerjaInput.value;
-      const keterangan = keteranganInput.value;
-      const fotoFile = fotoLaporanInput.files[0];
-
-      let fotoBase64 = '';
-      if (fotoFile) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          fotoBase64 = event.target.result;
-          saveReport(tanggal, nama, jamKerja, keterangan, fotoBase64);
-        };
-        reader.readAsDataURL(fotoFile);
-      } else {
-        saveReport(tanggal, nama, jamKerja, keterangan, fotoBase64);
-      }
-    });
-
-    function saveReport(tanggal, nama, jamKerja, keterangan, fotoBase64) {
-      // Ensure the user's report array exists
-      if (!laporanRiwayat[nama]) {
-          laporanRiwayat[nama] = [];
-      }
-
-      if (editingReportId) {
-        const reportIndex = laporanRiwayat[nama].findIndex(report => report.id === editingReportId);
-        if (reportIndex !== -1) {
-          laporanRiwayat[nama][reportIndex] = {
-            ...laporanRiwayat[nama][reportIndex], // Keep old timestamp
-            tanggal,
-            nama,
-            jamKerja: parseInt(jamKerja),
-            keterangan,
-            foto: fotoBase64
-          };
-          showToast('Laporan berhasil diperbarui!', 'success');
-          updateNotifications(`Laporan pada ${new Date(tanggal).toLocaleDateString('id-ID')} oleh ${capitalizeFirstLetter(nama)} berhasil diperbarui.`);
-        }
-      } else {
-        const newReport = {
-          id: generateUniqueId(),
-          timestamp: Date.now(),
-          tanggal,
-          nama,
-          jamKerja: parseInt(jamKerja),
-          keterangan,
-          foto: fotoBase64
-        };
-        laporanRiwayat[nama].unshift(newReport); // Add to the beginning of the specific user's array
-        showToast('Laporan berhasil ditambahkan!', 'success');
-        updateNotifications(`Laporan baru pada ${new Date(tanggal).toLocaleDateString('id-ID')} oleh ${capitalizeFirstLetter(nama)} berhasil ditambahkan.`);
-      }
-
-      saveLaporanRiwayat();
-      clearForm();
-      displayRiwayatLaporan();
-      updateDashboard();
-      activateTab('riwayat');
-    }
-
-    fotoLaporanInput.addEventListener('change', function() {
-      const file = this.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          imagePreview.src = e.target.result;
-          imagePreview.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-      } else {
-        imagePreview.src = '#';
-        imagePreview.style.display = 'none';
-      }
-    });
-
-
-    // --- Report History Functions ---
-
-    function displayRiwayatLaporan() {
-      riwayatLaporanContainer.innerHTML = '';
-      if (!loggedInUser) {
-        riwayatLaporanContainer.innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-folder-open"></i>
-            <p>Silakan login terlebih dahulu untuk melihat riwayat laporan Anda.</p>
-          </div>
-        `;
-        return;
-      }
-
-      let filteredReports = laporanRiwayat[loggedInUser] || []; // Access reports for the loggedInUser
-
-      const startDate = historyStartDate.value ? new Date(historyStartDate.value) : null;
-      const endDate = historyEndDate.value ? new Date(historyEndDate.value) : null;
-      const keyword = searchKeyword.value.toLowerCase();
-      const minJamKerja = filterJamKerjaMin.value ? parseInt(filterJamKerjaMin.value) : null;
-      const maxJamKerja = filterJamKerjaMax.value ? parseInt(filterJamKerjaMax.value) : null;
-
-      filteredReports = filteredReports.filter(report => {
-        const reportDate = new Date(report.tanggal);
-        const reportKeterangan = report.keterangan.toLowerCase();
-        const reportJamKerja = parseInt(report.jamKerja);
-
-        const dateMatch = (!startDate || reportDate >= startDate) && (!endDate || reportDate <= endDate);
-        const keywordMatch = !keyword || reportKeterangan.includes(keyword);
-        const jamKerjaMatch = (!minJamKerja || reportJamKerja >= minJamKerja) && (!maxJamKerja || reportJamKerja <= maxJamKerja);
-
-        return dateMatch && keywordMatch && jamKerjaMatch;
-      });
-
-      const sortByKey = sortBy.value;
-      const order = sortOrder.value;
-
-      filteredReports.sort((a, b) => {
-        let valA = a[sortByKey];
-        let valB = b[sortByKey];
-
-        if (sortByKey === 'tanggal') {
-          valA = new Date(a.tanggal);
-          valB = new Date(b.tanggal);
-        } else if (sortByKey === 'jamKerja') {
-            valA = parseInt(a.jamKerja);
-            valB = parseInt(b.jamKerja);
-        }
-
-        if (valA < valB) return order === 'asc' ? -1 : 1;
-        if (valA > valB) return order === 'asc' ? 1 : -1;
-        return 0;
-      });
-
-
-      if (filteredReports.length === 0) {
-        riwayatLaporanContainer.innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-box-open"></i>
-            <p>Tidak ada laporan yang cocok dengan filter yang Anda terapkan.</p>
-          </div>
-        `;
-        return;
-      }
-
-      filteredReports.forEach(report => {
-        const reportElement = document.createElement('div');
-        reportElement.className = 'history-item';
-        reportElement.innerHTML = `
-          <div class="report-actions">
-            <button class="action-btn" onclick="editReport('${report.id}')" title="Edit"><i class="fas fa-edit"></i></button>
-            <button class="action-btn" onclick="deleteReport('${report.id}')" title="Hapus"><i class="fas fa-trash-alt" style="color: var(--danger);"></i></button>
-          </div>
-          <div class="report-header">
-            <div class="report-meta">
-              <span><i class="fas fa-calendar-alt"></i> ${new Date(report.tanggal).toLocaleDateString('id-ID')}</span>
-              <span><i class="fas fa-hourglass-half"></i> ${report.jamKerja} Jam</span>
-              <span><i class="fas fa-user"></i> ${report.nama}</span>
-              <span style="font-size: 0.9em; color: #7f8c8d;"><i class="fas fa-clock"></i> Dibuat: ${new Date(report.timestamp).toLocaleDateString('id-ID')} ${new Date(report.timestamp).toLocaleTimeString('id-ID')}</span>
-            </div>
-          </div>
-          <div class="report-content">
-            <p>${report.keterangan}</p>
-            ${report.foto ? `<img src="${report.foto}" alt="Foto Laporan" style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 10px;">` : ''}
-          </div>
-        `;
-        riwayatLaporanContainer.appendChild(reportElement);
-      });
-    }
-
-    function editReport(id) {
-      // Access reports for the loggedInUser
-      const userReports = laporanRiwayat[loggedInUser] || [];
-      const reportToEdit = userReports.find(report => report.id === id);
-      if (reportToEdit) {
-        editingReportId = id;
-        reportIdToEditField.value = id;
-        tanggalInput.value = reportToEdit.tanggal;
-        namaField.value = reportToEdit.nama; // Will be set but disabled
-        jamKerjaInput.value = reportToEdit.jamKerja;
-        keteranganInput.value = reportToEdit.keterangan;
-        if (reportToEdit.foto) {
-          imagePreview.src = reportToEdit.foto;
-          imagePreview.style.display = 'block';
-        } else {
-          imagePreview.src = '#';
-          imagePreview.style.display = 'none';
-        }
-        submitReportBtn.textContent = 'Simpan Perubahan';
-        submitReportBtn.innerHTML = '<i class="fas fa-save"></i> Simpan Perubahan';
-        cancelEditBtn.style.display = 'inline-block';
-        activateTab('lapor');
-      }
-    }
-
-    cancelEditBtn.addEventListener('click', clearForm);
-
-    function deleteReport(id) {
-      if (confirm('Anda yakin ingin menghapus laporan ini?')) {
-        // Delete report from the specific user's array
-        if (laporanRiwayat[loggedInUser]) {
-            laporanRiwayat[loggedInUser] = laporanRiwayat[loggedInUser].filter(report => report.id !== id);
-        }
-        saveLaporanRiwayat();
-        displayRiwayatLaporan();
-        updateDashboard();
-        showToast('Laporan berhasil dihapus.', 'success');
-        updateNotifications(`Laporan berhasil dihapus.`);
-      }
-    }
-
-    applyHistoryFiltersBtn.addEventListener('click', displayRiwayatLaporan);
-    clearHistoryFiltersBtn.addEventListener('click', () => {
-      historyStartDate.value = '';
-      historyEndDate.value = '';
-      searchKeyword.value = '';
-      filterJamKerjaMin.value = '';
-      filterJamKerjaMax.value = '';
-      sortBy.value = 'timestamp';
-      sortOrder.value = 'desc';
-      displayRiwayatLaporan();
-    });
-
-    exportReportsCSVBtn.addEventListener('click', () => {
-      if (!loggedInUser) {
-          showToast('Harap login terlebih dahulu untuk ekspor CSV.', 'danger');
-          return;
-      }
-      const userReports = laporanRiwayat[loggedInUser] || [];
-      if (userReports.length === 0) {
-        showToast('Tidak ada laporan untuk diekspor.', 'warning');
-        return;
-      }
-
-      const csvData = userReports.map(report => ({
-        Tanggal: new Date(report.tanggal).toLocaleDateString('id-ID'),
-        Nama_Pengurus: report.nama,
-        Jam_Kerja: report.jamKerja,
-        Keterangan: report.keterangan.replace(/"/g, '""'), // Escape double quotes
-        Tanggal_Dibuat: new Date(report.timestamp).toLocaleString('id-ID')
-      }));
-
-      const csv = PapaParse.unparse(csvData, {
-        quotes: true // Ensure values are quoted
-      });
-
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.setAttribute('download', `laporan_${loggedInUser}_${new Date().toISOString().slice(0, 10)}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      showToast('Data laporan berhasil diekspor ke CSV.', 'success');
-    });
-
-    deleteAllUserReportsBtn.addEventListener('click', () => {
-      if (!loggedInUser) {
-        showToast('Harap login terlebih dahulu.', 'danger');
-        return;
-      }
-      if (confirm(`Anda yakin ingin menghapus SEMUA laporan untuk pengurus ${loggedInUser}? Tindakan ini tidak dapat dibatalkan.`)) {
-        delete laporanRiwayat[loggedInUser]; // Delete the entire user's reports array
-        saveLaporanRiwayat();
-        displayRiwayatLaporan();
-        updateDashboard();
-        showToast(`Semua laporan untuk ${loggedInUser} berhasil dihapus.`, 'success');
-        updateNotifications(`Semua laporan untuk ${loggedInUser} telah dihapus.`);
-      }
-    });
-
-    // --- Download PDF Functions ---
-
-    generatePrintBtn.addEventListener('click', () => {
-      if (!loggedInUser) {
-        showToast('Harap login terlebih dahulu di header.', 'danger');
-        return;
-      }
-
-      const startDate = printStartDate.value;
-      const endDate = printEndDate.value;
-
-      if (!startDate || !endDate) {
-        showToast('Harap pilih rentang tanggal untuk laporan PDF.', 'danger');
-        return;
-      }
-
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-
-      let reportsToPrint = (laporanRiwayat[loggedInUser] || []).filter(report => {
-        const reportDate = new Date(report.tanggal);
-        return reportDate >= start && reportDate <= end;
-      });
-
-      // Calculate total jam kerja for the displayed reports
-      const totalJamKerjaPdf = reportsToPrint.reduce((sum, report) => sum + parseInt(report.jamKerja || 0), 0);
-
-
-      reportsToPrint.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
-
-      pdfPreviewContainer.innerHTML = '';
-      if (reportsToPrint.length === 0) {
-        pdfPreviewContainer.innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-exclamation-circle"></i>
-            <p>Tidak ada laporan yang ditemukan untuk rentang tanggal tersebut dari pengurus ini.</p>
-          </div>
-        `;
-        downloadPdfButton.style.display = 'none';
-        return;
-      }
-
-      const headerHtml = `<h3>Laporan Harian Kos Baik.com<br>Pengurus: ${loggedInUser}<br>Periode: ${new Date(startDate).toLocaleDateString('id-ID')} - ${new Date(endDate).toLocaleDateString('id-ID')}<br>Total Jam Kerja: ${totalJamKerjaPdf} Jam</h3><hr>`;
-      pdfPreviewContainer.innerHTML += headerHtml;
-
-      reportsToPrint.forEach(report => {
-        const reportElement = document.createElement('div');
-        reportElement.className = 'pdf-report-item';
-        reportElement.innerHTML = `
-          <p><strong>Tanggal:</strong> ${new Date(report.tanggal).toLocaleDateString('id-ID')}</p>
-          <p><strong>Jam Kerja:</strong> ${report.jamKerja} Jam</p>
-          <p><strong>Keterangan:</strong> ${report.keterangan}</p>
-          ${report.foto ? `<img src="${report.foto}" alt="Foto Laporan" style="max-width: 150px; height: auto; border-radius: 4px; margin-top: 5px;">` : ''}
-        `;
-        pdfPreviewContainer.appendChild(reportElement);
-      });
-
-      downloadPdfButton.style.display = 'inline-block';
-      showToast('Preview laporan siap.', 'success');
-    });
-
-    downloadPdfButton.addEventListener('click', async () => {
-      if (!loggedInUser) {
-        showToast('Harap login terlebih dahulu.', 'danger');
-        return;
-      }
-      const startDate = printStartDate.value;
-      const endDate = printEndDate.value;
-
-      if (pdfPreviewContainer.children.length === 0 || pdfPreviewContainer.querySelector('.empty-state')) {
-          showToast('Harap tampilkan laporan terlebih dahulu untuk membuat PDF.', 'danger');
-          return;
-      }
-
-      showToast('Mulai membuat PDF...', 'primary');
-
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF('p', 'mm', 'a4');
-
-      const margin = 10;
-      let yOffset = margin;
-      const lineHeight = 7;
-      const maxPageHeight = doc.internal.pageSize.height - margin;
-
-      // Recalculate total jam kerja for the PDF
-      let reportsInPreview = (laporanRiwayat[loggedInUser] || []).filter(report => {
-        const reportDate = new Date(report.tanggal);
-        const start = new Date(printStartDate.value);
-        const end = new Date(printEndDate.value);
-        return reportDate >= start && reportDate <= end;
-      });
-      const totalJamKerjaPdf = reportsInPreview.reduce((sum, report) => sum + parseInt(report.jamKerja || 0), 0);
-
-
-      doc.setFontSize(16);
-      doc.text(`Laporan Harian Kos Baik.com`, doc.internal.pageSize.width / 2, yOffset, { align: 'center' });
-      yOffset += lineHeight;
-      doc.setFontSize(12);
-      doc.text(`Pengurus: ${loggedInUser}`, doc.internal.pageSize.width / 2, yOffset, { align: 'center' });
-      yOffset += lineHeight;
-      doc.text(`Periode: ${new Date(startDate).toLocaleDateString('id-ID')} - ${new Date(endDate).toLocaleDateString('id-ID')}`, doc.internal.pageSize.width / 2, yOffset, { align: 'center' });
-      yOffset += lineHeight; // Add line for total jam kerja
-      doc.text(`Total Jam Kerja: ${totalJamKerjaPdf} Jam`, doc.internal.pageSize.width / 2, yOffset, { align: 'center' });
-      yOffset += lineHeight * 2;
-
-      const reportItems = pdfPreviewContainer.querySelectorAll('.pdf-report-item');
-
-      for (const item of reportItems) {
-        const tanggalText = item.querySelector('p:nth-of-type(1)').textContent;
-        const jamKerjaText = item.querySelector('p:nth-of-type(2)').textContent;
-        const keteranganText = item.querySelector('p:nth-of-type(3)').textContent;
-        const imgElement = item.querySelector('img');
-
-        const requiredHeight = lineHeight * 3 + (imgElement ? 40 : 0) + 5;
-        if (yOffset + requiredHeight > maxPageHeight) {
-          doc.addPage();
-          yOffset = margin;
-        }
-
-        doc.setFontSize(10);
-        doc.setFont(undefined, 'bold');
-        doc.text(tanggalText, margin, yOffset);
-        yOffset += lineHeight;
-        doc.text(jamKerjaText, margin, yOffset);
-        yOffset += lineHeight;
-        doc.setFont(undefined, 'normal');
-        
-        const splitKeterangan = doc.splitTextToSize(keteranganText, doc.internal.pageSize.width - (margin * 2));
-        doc.text(splitKeterangan, margin, yOffset);
-        yOffset += (splitKeterangan.length * lineHeight) + 2;
-
-        if (imgElement && imgElement.src && imgElement.src !== '#') {
-          try {
-            const imgData = imgElement.src;
-            const imgProps = doc.getImageProperties(imgData);
-            const imgWidth = 50;
-            const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
-
-            if (yOffset + imgHeight > maxPageHeight) {
-              doc.addPage();
-              yOffset = margin;
-            }
-            doc.addImage(imgData, 'JPEG', margin, yOffset, imgWidth, imgHeight);
-            yOffset += imgHeight + 5;
-          } catch (e) {
-            console.error("Error adding image to PDF:", e);
-            showToast('Gagal menambahkan gambar ke PDF. Laporan mungkin tidak lengkap.', 'warning');
-          }
-        }
-        yOffset += 5;
-      }
-
-      const filename = `Laporan_KosBaik_${loggedInUser}_${startDate}_${endDate}.pdf`;
-      doc.save(filename);
-      showToast('PDF berhasil diunduh!', 'success');
-    });
-
-
-    // --- Global Data Management Functions ---
-
-    backupUserDataBtn.addEventListener('click', () => {
-      if (!loggedInUser) {
-        showToast('Harap login terlebih dahulu untuk backup data Anda.', 'danger');
-        return;
-      }
-      const userReportsToBackup = laporanRiwayat[loggedInUser] || [];
-      
-      const backupData = { 
-          user: loggedInUser,
-          reports: userReportsToBackup
-      };
-
-      const dataStr = JSON.stringify(backupData, null, 2);
-      const blob = new Blob([dataStr], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `kosbaik_backup_${loggedInUser}_${new Date().toISOString().slice(0, 10)}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      showToast('Data Anda berhasil di-backup!', 'success');
-    });
-
-    restoreUserDataBtn.addEventListener('click', () => {
-      if (!loggedInUser) {
-        showToast('Harap login terlebih dahulu untuk restore data Anda.', 'danger');
-        return;
-      }
-
-      const file = restoreInput.files[0];
-      if (!file) {
-        showToast('Pilih file JSON untuk di-restore.', 'danger');
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const restoredData = JSON.parse(e.target.result);
-          
-          // Validate structure for user-specific backup
-          if (restoredData.user && Array.isArray(restoredData.reports)) {
-              if (restoredData.user !== loggedInUser) {
-                  showToast(`File backup ini milik pengguna ${restoredData.user}, bukan ${loggedInUser}. Data tidak dapat dipulihkan.`, 'danger');
-                  return;
-              }
-
-              if (confirm(`Ini akan mengganti semua laporan yang ada untuk ${loggedInUser} dengan data dari file backup ini. Lanjutkan?`)) {
-                  laporanRiwayat[loggedInUser] = restoredData.reports;
-                  saveLaporanRiwayat();
-                  displayRiwayatLaporan();
-                  updateDashboard();
-                  showToast('Data Anda berhasil di-restore!', 'success');
-                  updateNotifications('Data laporan Anda telah di-restore dari backup.');
-              }
-          } else {
-            showToast('Format file JSON tidak valid atau bukan file backup KosBaik. Harap pilih file backup yang benar.', 'danger');
-          }
-        } catch (error) {
-          showToast('Terjadi kesalahan saat membaca file JSON. Pastikan formatnya benar.', 'danger');
-          console.error('Error parsing JSON:', error);
-        }
-      };
-      reader.onerror = () => {
-        showToast('Gagal membaca file.', 'danger');
-      };
-      reader.readAsText(file);
-    });
-
-    deleteAllReportsGlobalBtn.addEventListener('click', () => {
-      if (confirm('Anda yakin ingin menghapus SEMUA laporan dari SEMUA pengurus? Tindakan ini tidak dapat dibatalkan.')) {
-        laporanRiwayat = {}; // Clear all reports for all users
-        saveLaporanRiwayat();
-        // Logout user after global delete
-        logoutUser(); // This will also refresh the UI to login screen
-        showToast('Semua laporan (global) berhasil dihapus.', 'success');
-        updateNotifications('SEMUA laporan telah dihapus secara global.');
-      }
-    });
-
-
-    // --- Login/Logout Functions ---
-
+    const toastNotification = document.getElementById('toast-notification');
+
+    // --- Validation Map ---
+    const validationErrors = {
+        tanggal: 'Tanggal laporan wajib diisi.',
+        nama: 'Nama pengurus wajib dipilih.',
+        jamKerja: 'Jam kerja wajib diisi dan harus angka positif.',
+        keterangan: 'Keterangan kegiatan wajib diisi.'
+    };
+
+    // --- Functions ---
+
+    // Login and Logout Functions
     function showLoginScreen() {
         loginContainer.style.display = 'block';
         mainAppWrapper.style.display = 'none';
         loggedInUser = null;
-        localStorage.removeItem('loggedInUser'); // Clear loggedInUser from localStorage
-        loginPasswordInput.value = ''; // Clear password field
-        loginErrorDisplay.style.display = 'none';
-        loginUsernameSelect.value = ''; // Reset username select
-        headerAvatar.textContent = '-';
-        headerAvatar.style.backgroundColor = getCssVariable('--gray'); // Reset avatar color
-        loggedInUserNameDisplay.textContent = ''; // Clear displayed user name
-
-        // Reset UI elements to empty states
-        document.getElementById('dashboard-total-reports').textContent = '0';
-        document.getElementById('dashboard-total-hours').textContent = '0';
-        document.getElementById('dashboard-last-report').textContent = 'Belum ada';
-        if (monthlyReportsChartInstance) {
-          monthlyReportsChartInstance.destroy();
-          monthlyReportsChartInstance = null;
-        }
-        recentActivityContainer.innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-clipboard"></i>
-            <p>Belum ada laporan dari Anda.</p>
-          </div>
-        `;
-        riwayatLaporanContainer.innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-folder-open"></i>
-            <p>Silakan login terlebih dahulu untuk melihat riwayat laporan Anda.</p>
-          </div>
-        `;
-        pdfPreviewContainer.innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-info-circle"></i>
-            <p>Pilih pengurus di header, lalu pilih rentang tanggal dan klik "Tampilkan Laporan" untuk melihat preview laporan.</p>
-          </div>
-        `;
-        downloadPdfButton.style.display = 'none'; // Hide download button
-        clearForm(); // Clear report form data
-        notificationsContainer.innerHTML = `
-          <div class="empty-state-small">
-            <i class="fas fa-bell-slash"></i>
-            <p>Belum ada aktivitas</p>
-          </div>
-        `; // Clear notifications
+        localStorage.removeItem('loggedInUser');
+        loginPasswordInput.value = ''; // Clear password on logout
+        loginUsernameSelect.value = ''; // Clear username selection on logout
+        loginError.style.display = 'none'; // Hide error message
+        namaField.value = ''; // Clear report form name field
+        headerAvatar.textContent = '-'; // Clear avatar
+        loggedInUserNameDisplay.textContent = ''; // Clear user name
+        clearReportFormValidation(); // Clear any validation errors from previous session
     }
 
     function showMainApp(username) {
-        loginContainer.style.display = 'none';
-        mainAppWrapper.style.display = 'block';
-        
         loggedInUser = username;
         localStorage.setItem('loggedInUser', username);
+        loginContainer.style.display = 'none';
+        mainAppWrapper.style.display = 'block';
+        namaField.value = loggedInUser; // Pre-fill name in report form
+        headerAvatar.textContent = loggedInUser.charAt(0).toUpperCase(); // Set avatar initial
+        loggedInUserNameDisplay.textContent = loggedInUser; // Display full username
 
-        headerAvatar.textContent = username.charAt(0).toUpperCase();
-        headerAvatar.style.backgroundColor = getCssVariable('--primary');
-        loggedInUserNameDisplay.textContent = username; // Display full name
-        namaField.value = username; // Pre-fill report form 'nama' field
-
-        // Ensure user's report array exists when they log in
-        if (!laporanRiwayat[username]) {
-            laporanRiwayat[username] = [];
-            saveLaporanRiwayat();
-        }
-
-        activateTab('dashboard'); // Go to dashboard after login
-        updateDashboard(); // Update dashboard for logged-in user
-        // No need to call displayRiwayatLaporan explicitly here, activateTab handles it.
+        // Initialize dashboard and reports for the logged-in user
+        updateDashboard();
+        displayRiwayatLaporan();
+        renderMonthlyReportsChart();
+        displayNotifications();
+        activateTab('dashboard'); // Automatically go to dashboard
     }
 
-    loginButton.addEventListener('click', () => {
+    function handleLogin() {
         const username = loginUsernameSelect.value;
         const password = loginPasswordInput.value;
+        loginError.style.display = 'none'; // Hide previous error
 
-        if (!username || !password) {
-            loginErrorDisplay.textContent = 'Nama pengurus dan password harus diisi.';
-            loginErrorDisplay.style.display = 'block';
+        if (!username) {
+            showToast('Pilih nama pengurus.', 'warning');
+            loginError.textContent = 'Pilih nama pengurus.';
+            loginError.style.display = 'block';
             return;
         }
 
-        if (userPasswords[username] === password) {
-            loginErrorDisplay.style.display = 'none';
+        if (!password) {
+            showToast('Masukkan password.', 'warning');
+            loginError.textContent = 'Masukkan password.';
+            loginError.style.display = 'block';
+            return;
+        }
+
+        if (users[username] && users[username] === password) {
             showMainApp(username);
             showToast(`Selamat datang, ${username}!`, 'success');
         } else {
-            loginErrorDisplay.textContent = 'Nama pengurus atau password salah.';
-            loginErrorDisplay.style.display = 'block';
+            showToast('Nama pengurus atau password salah!', 'danger');
+            loginError.textContent = 'Nama pengurus atau password salah!';
+            loginError.style.display = 'block';
         }
-    });
+    }
 
-    logoutButton.addEventListener('click', () => {
-        if (confirm('Anda yakin ingin logout?')) {
-            logoutUser();
+    function handleLogout() {
+        if (confirm('Apakah Anda yakin ingin logout?')) {
+            showLoginScreen();
+            showToast('Anda telah logout.', 'info');
         }
-    });
+    }
 
-    function logoutUser() {
-        showLoginScreen();
-        showToast('Anda telah logout.', 'info');
+    // --- Utility Functions ---
+    function generateUniqueId() {
+        return 'report_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    function saveLaporanRiwayat() {
+        localStorage.setItem('laporanRiwayat', JSON.stringify(laporanRiwayat));
+    }
+
+    function showToast(message, type = 'info') {
+        toastNotification.textContent = message;
+        toastNotification.className = 'toast-notification show'; // Reset and add show class
+        toastNotification.style.backgroundColor = ''; // Clear previous background
+        if (type === 'success') {
+            toastNotification.style.backgroundColor = 'var(--secondary)';
+        } else if (type === 'danger') {
+            toastNotification.style.backgroundColor = 'var(--danger)';
+        } else if (type === 'warning') {
+            toastNotification.style.backgroundColor = 'var(--warning)';
+        } else if (type === 'info') {
+            toastNotification.style.backgroundColor = 'var(--primary)';
+        }
+
+        setTimeout(() => {
+            toastNotification.classList.remove('show');
+        }, 3000); // Hide after 3 seconds
+    }
+
+    function validateField(fieldElement, errorId) {
+        const errorElement = document.getElementById(errorId);
+        if (!fieldElement.value.trim()) {
+            fieldElement.classList.add('error');
+            errorElement.textContent = validationErrors[fieldElement.id];
+            errorElement.style.display = 'block';
+            return false;
+        } else if (fieldElement.id === 'jamKerja' && (parseFloat(fieldElement.value) <= 0 || parseFloat(fieldElement.value) > 24)) {
+            fieldElement.classList.add('error');
+            errorElement.textContent = 'Jam kerja harus antara 1 sampai 24 jam.';
+            errorElement.style.display = 'block';
+            return false;
+        }
+        fieldElement.classList.remove('error');
+        errorElement.textContent = '';
+        errorElement.style.display = 'none';
+        return true;
+    }
+
+    function validateForm() {
+        let isValid = true;
+        isValid = validateField(tanggalField, 'tanggal-error') && isValid;
+        // namaField is disabled and set by login, so no user input validation needed
+        isValid = validateField(jamKerjaField, 'jamKerja-error') && isValid;
+        isValid = validateField(keteranganField, 'keterangan-error') && isValid;
+        return isValid;
+    }
+
+    function clearReportFormValidation() {
+        const fields = [tanggalField, namaField, jamKerjaField, keteranganField, fotoLaporanInput];
+        fields.forEach(field => {
+            field.classList.remove('error');
+            const errorElement = document.getElementById(`${field.id}-error`);
+            if (errorElement) {
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+            }
+        });
+    }
+
+    function clearForm() {
+        tanggalField.value = '';
+        namaField.value = loggedInUser || ''; // Keep pre-filled if logged in
+        jamKerjaField.value = '';
+        keteranganField.value = '';
+        fotoLaporanInput.value = ''; // Clear the file input
+        imagePreview.src = '#';
+        imagePreview.style.display = 'none';
+        submitReportBtn.textContent = 'Kirim Laporan';
+        submitReportBtn.classList.remove('btn-success');
+        submitReportBtn.classList.add('btn-primary');
+        cancelEditBtn.style.display = 'none';
+        editingReportId = null;
+        reportIdToEdit.value = '';
+        clearReportFormValidation();
+    }
+
+    function addNotification(message) {
+        const timestamp = new Date().toLocaleString('id-ID', {
+            dateStyle: 'short',
+            timeStyle: 'short'
+        });
+        const notification = {
+            id: generateUniqueId(),
+            message: message,
+            timestamp: timestamp,
+            read: false
+        };
+        let notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+        notifications.unshift(notification); // Add to the beginning
+        localStorage.setItem('notifications', JSON.stringify(notifications));
+        displayNotifications();
+    }
+
+    function displayNotifications() {
+        let notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+        notificationsContainer.innerHTML = ''; // Clear existing notifications
+
+        if (notifications.length === 0) {
+            notificationsContainer.innerHTML = `
+                <div class="empty-state-small">
+                    <i class="fas fa-bell-slash"></i>
+                    <p>Belum ada aktivitas</p>
+                </div>
+            `;
+            return;
+        }
+
+        notifications.forEach(notif => {
+            const notifEl = document.createElement('div');
+            notifEl.classList.add('notification-item');
+            if (!notif.read) {
+                notifEl.style.fontWeight = 'bold'; // Highlight unread
+            }
+            notifEl.innerHTML = `
+                <p>${notif.message}</p>
+                <small style="color: var(--gray);">${notif.timestamp}</small>
+            `;
+            // Mark as read on click
+            notifEl.addEventListener('click', () => {
+                notif.read = true;
+                localStorage.setItem('notifications', JSON.stringify(notifications));
+                displayNotifications(); // Re-render to update read status
+            });
+            notificationsContainer.appendChild(notifEl);
+        });
     }
 
 
-    // --- Initial Load Logic ---
-    navTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        // Ensure user is logged in before navigating
-        if (!loggedInUser) {
-            showToast('Harap login terlebih dahulu.', 'danger');
+    // --- Report Management (CRUD) ---
+    function saveReport(tanggal, nama, jamKerja, keterangan, fotoBase64) {
+        // Ensure the user's report array exists
+        if (!laporanRiwayat[nama]) {
+            laporanRiwayat[nama] = [];
+        }
+
+        const timestamp = new Date().toISOString(); // For sorting and tracking creation time
+
+        if (editingReportId) {
+            // Edit existing report
+            let reports = laporanRiwayat[nama];
+            const reportIndex = reports.findIndex(report => report.id === editingReportId);
+            if (reportIndex !== -1) {
+                reports[reportIndex] = {
+                    ...reports[reportIndex], // Keep original timestamp and id
+                    tanggal,
+                    nama,
+                    jamKerja: parseFloat(jamKerja),
+                    keterangan,
+                    fotoBase64,
+                    updatedAt: timestamp // Add an update timestamp
+                };
+                showToast('Laporan berhasil diperbarui!', 'success');
+                addNotification(`Laporan tanggal ${tanggal} diperbarui.`);
+            }
+            editingReportId = null;
+            reportIdToEdit.value = '';
+            submitReportBtn.textContent = 'Kirim Laporan';
+            submitReportBtn.classList.remove('btn-success');
+            submitReportBtn.classList.add('btn-primary');
+            cancelEditBtn.style.display = 'none';
+        } else {
+            // Add new report
+            const newReport = {
+                id: generateUniqueId(),
+                tanggal,
+                nama,
+                jamKerja: parseFloat(jamKerja),
+                keterangan,
+                fotoBase64,
+                timestamp: timestamp // Store creation timestamp
+            };
+            laporanRiwayat[nama].unshift(newReport); // Add to the beginning of the specific user's array
+            showToast('Laporan berhasil ditambahkan!', 'success');
+            addNotification(`Laporan baru tanggal ${tanggal} dari ${nama} ditambahkan.`);
+        }
+        saveLaporanRiwayat();
+        clearForm();
+        updateDashboard();
+        displayRiwayatLaporan();
+        renderMonthlyReportsChart(); // Re-render chart after data change
+    }
+
+    function editReport(reportId) {
+        if (!loggedInUser || !laporanRiwayat[loggedInUser]) {
+            showToast('Anda harus login untuk mengedit laporan.', 'danger');
             return;
         }
-        const target = document.querySelector(tab.dataset.tabTarget);
-        contentSections.forEach(section => section.classList.remove('active'));
-        navTabs.forEach(t => t.classList.remove('active'));
-        target.classList.add('active');
-        tab.classList.add('active');
 
-        // Specific actions on tab change
-        if (tab.dataset.tabTarget === '#riwayat') {
-          displayRiwayatLaporan();
-        } else if (tab.dataset.tabTarget === '#dashboard') {
-          updateDashboard();
-        } else if (tab.dataset.tabTarget === '#lapor') {
-          if (!editingReportId) {
-            clearForm();
-          }
-          namaField.value = loggedInUser; // Ensure nama field is pre-filled
+        const report = laporanRiwayat[loggedInUser].find(r => r.id === reportId);
+        if (report) {
+            tanggalField.value = report.tanggal;
+            namaField.value = report.nama;
+            jamKerjaField.value = report.jamKerja;
+            keteranganField.value = report.keterangan;
+            if (report.fotoBase64) {
+                imagePreview.src = report.fotoBase64;
+                imagePreview.style.display = 'block';
+            } else {
+                imagePreview.src = '#';
+                imagePreview.style.display = 'none';
+            }
+            editingReportId = report.id;
+            reportIdToEdit.value = report.id;
+            submitReportBtn.textContent = 'Perbarui Laporan';
+            submitReportBtn.classList.remove('btn-primary');
+            submitReportBtn.classList.add('btn-success');
+            cancelEditBtn.style.display = 'inline-block';
+            activateTab('lapor'); // Switch to "Buat Laporan" tab
+        } else {
+            showToast('Laporan tidak ditemukan.', 'danger');
         }
-      });
+    }
+
+    function deleteReport(reportId) {
+        if (!loggedInUser || !laporanRiwayat[loggedInUser]) {
+            showToast('Anda harus login untuk menghapus laporan.', 'danger');
+            return;
+        }
+
+        if (confirm('Apakah Anda yakin ingin menghapus laporan ini?')) {
+            laporanRiwayat[loggedInUser] = laporanRiwayat[loggedInUser].filter(report => report.id !== reportId);
+            saveLaporanRiwayat();
+            displayRiwayatLaporan();
+            updateDashboard();
+            renderMonthlyReportsChart(); // Re-render chart
+            showToast('Laporan berhasil dihapus!', 'success');
+            addNotification(`Laporan dihapus.`);
+            clearForm(); // Clear form if current editing report is deleted
+        }
+    }
+
+    function deleteAllUserReports() {
+        if (!loggedInUser) {
+            showToast('Anda harus login untuk melakukan tindakan ini.', 'danger');
+            return;
+        }
+        if (confirm(`Apakah Anda yakin ingin menghapus SEMUA laporan untuk ${loggedInUser}? Tindakan ini tidak dapat dibatalkan!`)) {
+            delete laporanRiwayat[loggedInUser];
+            saveLaporanRiwayat();
+            displayRiwayatLaporan(); // Clear history display
+            updateDashboard(); // Reset dashboard stats
+            renderMonthlyReportsChart(); // Clear chart
+            showToast(`Semua laporan untuk ${loggedInUser} telah dihapus.`, 'success');
+            addNotification(`Semua laporan ${loggedInUser} dihapus.`);
+        }
+    }
+
+    function deleteAllReportsGlobally() {
+        if (confirm('PERINGATAN: Tindakan ini akan menghapus SEMUA laporan dari SEMUA pengurus. Apakah Anda yakin ingin melanjutkan? INI TIDAK DAPAT DIBATALKAN!')) {
+            if (confirm('KONFIRMASI TERAKHIR: Ini akan menghapus SEMUA DATA LAPORAN. Klik OK untuk konfirmasi.')) {
+                localStorage.removeItem('laporanRiwayat');
+                laporanRiwayat = {}; // Reset in memory
+                showToast('Semua laporan (global) telah dihapus!', 'success');
+                addNotification('Semua laporan global telah dihapus oleh seorang admin.'); // General notification
+                showLoginScreen(); // Force re-login
+                // Clear all displays
+                displayRiwayatLaporan();
+                updateDashboard();
+                renderMonthlyReportsChart();
+            }
+        }
+    }
+
+    // --- Display and Filter Reports ---
+    function displayRiwayatLaporan() {
+        riwayatLaporanContainer.innerHTML = '';
+        if (!loggedInUser) {
+            riwayatLaporanContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-user-check"></i>
+                    <p>Silakan login untuk melihat riwayat laporan Anda.</p>
+                </div>
+            `;
+            return;
+        }
+
+        let reports = laporanRiwayat[loggedInUser] || [];
+        let filteredReports = [...reports]; // Create a mutable copy for filtering
+
+        // Apply filters
+        const start = historyStartDate.value ? new Date(historyStartDate.value) : null;
+        const end = historyEndDate.value ? new Date(historyEndDate.value) : null;
+        const keyword = searchKeyword.value.toLowerCase();
+        const minJamKerja = parseFloat(filterJamKerjaMin.value) || 0;
+        const maxJamKerja = parseFloat(filterJamKerjaMax.value) || 24; // Default max 24 hours
+
+        filteredReports = filteredReports.filter(report => {
+            const reportDate = new Date(report.tanggal);
+            const matchesDate = (!start || reportDate >= start) && (!end || reportDate <= end);
+            const matchesKeyword = !keyword || report.keterangan.toLowerCase().includes(keyword);
+            const matchesJamKerja = report.jamKerja >= minJamKerja && report.jamKerja <= maxJamKerja;
+            return matchesDate && matchesKeyword && matchesJamKerja;
+        });
+
+        // Apply sorting
+        const sortByKey = sortBy.value;
+        const order = sortOrder.value;
+
+        filteredReports.sort((a, b) => {
+            let valA, valB;
+            if (sortByKey === 'tanggal') {
+                valA = new Date(a.tanggal).getTime();
+                valB = new Date(b.tanggal).getTime();
+            } else if (sortByKey === 'timestamp') {
+                valA = new Date(a.timestamp).getTime();
+                valB = new Date(b.timestamp).getTime();
+            } else { // jamKerja
+                valA = a[sortByKey];
+                valB = b[sortByKey];
+            }
+
+            if (order === 'asc') {
+                return valA - valB;
+            } else {
+                return valB - valA;
+            }
+        });
+
+
+        if (filteredReports.length === 0) {
+            riwayatLaporanContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-folder-open"></i>
+                    <p>Tidak ada laporan yang ditemukan dengan filter yang dipilih.</p>
+                </div>
+            `;
+            return;
+        }
+
+        filteredReports.forEach(report => {
+            const reportEl = document.createElement('div');
+            reportEl.classList.add('history-item');
+            const formattedDate = new Date(report.tanggal).toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
+            const timestampFormatted = new Date(report.timestamp).toLocaleString('id-ID', {
+                dateStyle: 'short',
+                timeStyle: 'short'
+            });
+
+            reportEl.innerHTML = `
+                <div class="report-header">
+                    <div>
+                        <h3 style="margin-bottom: 5px;">Laporan Tanggal: ${formattedDate}</h3>
+                        <div class="report-meta">
+                            <span><i class="fas fa-user-circle"></i> ${report.nama}</span>
+                            <span><i class="fas fa-hourglass-start"></i> ${report.jamKerja} Jam</span>
+                            <span title="Dibuat pada"><i class="fas fa-clock"></i> ${timestampFormatted}</span>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <span class="action-btn edit-btn" data-id="${report.id}" title="Edit"><i class="fas fa-edit"></i></span>
+                        <span class="action-btn delete-btn" data-id="${report.id}" title="Hapus"><i class="fas fa-trash-alt"></i></span>
+                        ${report.fotoBase64 ? `<span class="action-btn view-photo-btn" data-photo="${report.fotoBase64}" title="Lihat Foto"><i class="fas fa-image"></i></span>` : ''}
+                    </div>
+                </div>
+                <div class="report-content">
+                    <p>${report.keterangan.replace(/\n/g, '<br>')}</p>
+                    ${report.fotoBase64 ? `<img src="${report.fotoBase64}" alt="Foto Laporan" style="max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 10px; display: block;">` : ''}
+                </div>
+            `;
+            riwayatLaporanContainer.appendChild(reportEl);
+        });
+
+        // Add event listeners for edit and delete buttons
+        riwayatLaporanContainer.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => editReport(e.currentTarget.dataset.id));
+        });
+
+        riwayatLaporanContainer.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => deleteReport(e.currentTarget.dataset.id));
+        });
+
+        riwayatLaporanContainer.querySelectorAll('.view-photo-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const photoData = e.currentTarget.dataset.photo;
+                const newWindow = window.open();
+                newWindow.document.body.innerHTML = `<img src="${photoData}" style="max-width: 100%; height: auto;">`;
+                newWindow.document.title = 'Foto Laporan';
+            });
+        });
+    }
+
+
+    function updateDashboard() {
+        if (!loggedInUser) {
+            dashboardTotalReports.textContent = '0';
+            dashboardTotalHours.textContent = '0';
+            dashboardLastReport.textContent = 'Belum ada';
+            recentActivityContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-clipboard"></i>
+                    <p>Silakan login untuk melihat ringkasan laporan Anda.</p>
+                </div>
+            `;
+            return;
+        }
+
+        const userReports = laporanRiwayat[loggedInUser] || [];
+        const totalReports = userReports.length;
+        const totalHours = userReports.reduce((sum, report) => sum + report.jamKerja, 0);
+
+        dashboardTotalReports.textContent = totalReports;
+        dashboardTotalHours.textContent = totalHours;
+
+        if (totalReports > 0) {
+            // Sort by timestamp (most recent first) to get the last report
+            const sortedReports = [...userReports].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+            const lastReportDate = new Date(sortedReports[0].tanggal).toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            });
+            dashboardLastReport.textContent = lastReportDate;
+
+            // Display recent activities
+            recentActivityContainer.innerHTML = '';
+            const recentCount = Math.min(sortedReports.length, 5); // Show up to 5 recent reports
+            for (let i = 0; i < recentCount; i++) {
+                const report = sortedReports[i];
+                const activityEl = document.createElement('div');
+                activityEl.classList.add('history-item'); // Reuse history-item style for consistency
+                activityEl.style.padding = '10px';
+                activityEl.style.marginBottom = '10px';
+                activityEl.innerHTML = `
+                    <p><strong>${new Date(report.tanggal).toLocaleDateString('id-ID')}</strong> - ${report.keterangan.substring(0, 100)}${report.keterangan.length > 100 ? '...' : ''} (${report.jamKerja} Jam)</p>
+                    <div style="text-align: right; font-size: 0.8em; color: var(--gray);">${new Date(report.timestamp).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' })}</div>
+                `;
+                recentActivityContainer.appendChild(activityEl);
+            }
+        } else {
+            dashboardLastReport.textContent = 'Belum ada';
+            recentActivityContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-clipboard"></i>
+                    <p>Belum ada laporan dari Anda.</p>
+                </div>
+            `;
+        }
+    }
+
+    // --- Charting ---
+    function renderMonthlyReportsChart() {
+        if (!loggedInUser) {
+            if (monthlyReportsChartInstance) {
+                monthlyReportsChartInstance.destroy();
+                monthlyReportsChartInstance = null;
+            }
+            const chartContainer = document.getElementById('monthlyReportsChart').parentElement;
+            chartContainer.innerHTML = `
+                <div class="empty-state-small">
+                    <i class="fas fa-chart-line"></i>
+                    <p>Login untuk melihat statistik laporan bulanan Anda.</p>
+                </div>
+            `;
+            return;
+        }
+
+        const userReports = laporanRiwayat[loggedInUser] || [];
+        const monthlyData = {}; // Stores { 'YYYY-MM': { reports: count, hours: totalHours } }
+
+        userReports.forEach(report => {
+            const date = new Date(report.tanggal);
+            const yearMonth = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+            if (!monthlyData[yearMonth]) {
+                monthlyData[yearMonth] = {
+                    reports: 0,
+                    hours: 0
+                };
+            }
+            monthlyData[yearMonth].reports++;
+            monthlyData[yearMonth].hours += report.jamKerja;
+        });
+
+        const sortedMonths = Object.keys(monthlyData).sort();
+        const labels = sortedMonths.map(ym => {
+            const [year, month] = ym.split('-');
+            const date = new Date(year, month - 1, 1);
+            return date.toLocaleDateString('id-ID', {
+                month: 'short',
+                year: '2-digit'
+            });
+        });
+        const reportCounts = sortedMonths.map(ym => monthlyData[ym].reports);
+        const hoursCounts = sortedMonths.map(ym => monthlyData[ym].hours);
+
+        const ctx = document.getElementById('monthlyReportsChart').getContext('2d');
+
+        // Destroy old chart if it exists
+        if (monthlyReportsChartInstance) {
+            monthlyReportsChartInstance.destroy();
+        }
+
+        monthlyReportsChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Jumlah Laporan',
+                    data: reportCounts,
+                    backgroundColor: 'rgba(52, 152, 219, 0.7)', // Primary color
+                    borderColor: 'rgba(52, 152, 219, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y-reports'
+                }, {
+                    label: 'Total Jam Kerja',
+                    data: hoursCounts,
+                    backgroundColor: 'rgba(46, 204, 113, 0.7)', // Secondary color
+                    borderColor: 'rgba(46, 204, 113, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y-hours'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Statistik Laporan & Jam Kerja per Bulan'
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Bulan'
+                        }
+                    },
+                    'y-reports': {
+                        type: 'linear',
+                        position: 'left',
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Jumlah Laporan'
+                        },
+                        grid: {
+                            drawOnChartArea: false, // Only draw grid lines for one y-axis
+                        }
+                    },
+                    'y-hours': {
+                        type: 'linear',
+                        position: 'right',
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Total Jam Kerja (Jam)'
+                        },
+                        grid: {
+                            drawOnChartArea: false, // Only draw grid lines for one y-axis
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // --- PDF Generation ---
+    function generatePdfPreview() {
+        pdfPreviewContainer.innerHTML = '';
+        downloadPdfButton.style.display = 'none';
+
+        if (!loggedInUser) {
+            pdfPreviewContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-user-check"></i>
+                    <p>Silakan login untuk menampilkan laporan.</p>
+                </div>
+            `;
+            return;
+        }
+
+        const userReports = laporanRiwayat[loggedInUser] || [];
+        let reportsToPrint = [...userReports];
+
+        const startDate = printStartDate.value ? new Date(printStartDate.value) : null;
+        const endDate = printEndDate.value ? new Date(printEndDate.value) : null;
+
+        reportsToPrint = reportsToPrint.filter(report => {
+            const reportDate = new Date(report.tanggal);
+            const matchesStartDate = !startDate || reportDate >= startDate;
+            const matchesEndDate = !endDate || reportDate <= endDate;
+            return matchesStartDate && matchesEndDate;
+        });
+
+        if (reportsToPrint.length === 0) {
+            pdfPreviewContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Tidak ada laporan yang ditemukan untuk rentang tanggal yang dipilih.</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Sort reports by date (oldest first for PDF display)
+        reportsToPrint.sort((a, b) => new Date(a.tanggal).getTime() - new Date(b.tanggal).getTime());
+
+        const previewContent = document.createElement('div');
+        previewContent.id = 'pdfContent'; // ID for html2canvas
+        previewContent.innerHTML = `<h3>Laporan Harian ${loggedInUser}<br>Periode: ${printStartDate.value || 'Awal'} s/d ${printEndDate.value || 'Akhir'}</h3>`;
+
+        reportsToPrint.forEach(report => {
+            const reportItem = document.createElement('div');
+            reportItem.classList.add('pdf-report-item');
+            const formattedDate = new Date(report.tanggal).toLocaleDateString('id-ID', {
+                weekday: 'long',
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            reportItem.innerHTML = `
+                <p><strong>Tanggal:</strong> ${formattedDate}</p>
+                <p><strong>Nama Pengurus:</strong> ${report.nama}</p>
+                <p><strong>Jam Kerja:</strong> ${report.jamKerja} Jam</p>
+                <p><strong>Keterangan:</strong></p>
+                <p style="margin-left: 15px; white-space: pre-wrap;">${report.keterangan}</p>
+                ${report.fotoBase64 ? `<img src="${report.fotoBase64}" alt="Foto Laporan" style="max-width: 100%; height: auto; display: block; margin-top: 10px;">` : ''}
+                <br>
+            `;
+            previewContent.appendChild(reportItem);
+        });
+        pdfPreviewContainer.appendChild(previewContent);
+        downloadPdfButton.style.display = 'inline-block';
+    }
+
+
+    async function downloadPdfReport() {
+        const {
+            jsPDF
+        } = window.jspdf;
+        const input = document.getElementById('pdfContent'); // Element to convert
+
+        if (!input) {
+            showToast('Tidak ada konten untuk diunduh. Silakan tampilkan laporan terlebih dahulu.', 'danger');
+            return;
+        }
+
+        showToast('Membuat PDF, mohon tunggu...', 'info');
+
+        try {
+            const canvas = await html2canvas(input, {
+                scale: 2, // Increase scale for better quality
+                useCORS: true // Important for images from base64 if hosted externally
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4'); // Portrait, millimeters, A4 size
+            const imgWidth = 210; // A4 width in mm
+            const pageHeight = 297; // A4 height in mm
+            const imgHeight = canvas.height * imgWidth / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            const fileName = `Laporan_Harian_${loggedInUser}_${printStartDate.value}_sd_${printEndDate.value}.pdf`;
+            pdf.save(fileName);
+            showToast('PDF berhasil diunduh!', 'success');
+            addNotification(`Laporan PDF periode ${printStartDate.value} s/d ${printEndDate.value} diunduh.`);
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            showToast('Gagal membuat PDF. Coba lagi.', 'danger');
+        }
+    }
+
+
+    // --- Backup & Restore ---
+    function backupUserData() {
+        if (!loggedInUser) {
+            showToast('Silakan login untuk mengunduh backup data Anda.', 'danger');
+            return;
+        }
+
+        const userData = laporanRiwayat[loggedInUser] || [];
+        const dataStr = JSON.stringify(userData, null, 2); // Pretty print JSON
+
+        const blob = new Blob([dataStr], {
+            type: 'application/json'
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const fileName = `backup_laporan_${loggedInUser}_${new Date().toISOString().slice(0,10)}.json`;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Backup data berhasil diunduh!', 'success');
+        addNotification(`Backup data untuk ${loggedInUser} diunduh.`);
+    }
+
+    function restoreUserData(event) {
+        if (!loggedInUser) {
+            showToast('Silakan login untuk memulihkan data Anda.', 'danger');
+            return;
+        }
+
+        const file = event.target.files[0];
+        if (!file) {
+            showToast('Pilih file JSON untuk diunggah.', 'warning');
+            return;
+        }
+
+        if (file.type !== 'application/json') {
+            showToast('File yang diunggah harus berformat JSON.', 'danger');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const restoredData = JSON.parse(e.target.result);
+                if (!Array.isArray(restoredData)) {
+                    showToast('Format file JSON tidak valid. Seharusnya array laporan.', 'danger');
+                    return;
+                }
+
+                // Append or overwrite strategy. Here, we'll overwrite for the current user.
+                if (confirm(`Ini akan mengganti semua laporan Anda saat ini (${loggedInUser}) dengan data dari file. Lanjutkan?`)) {
+                    laporanRiwayat[loggedInUser] = restoredData;
+                    saveLaporanRiwayat();
+                    showToast('Data laporan berhasil dipulihkan!', 'success');
+                    addNotification(`Data laporan untuk ${loggedInUser} dipulihkan dari backup.`);
+                    updateDashboard();
+                    displayRiwayatLaporan();
+                    renderMonthlyReportsChart();
+                    activateTab('riwayat'); // Go to history after restore
+                }
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                showToast('Gagal memproses file JSON. Pastikan formatnya benar.', 'danger');
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    // --- CSV Export ---
+    function exportReportsToCSV() {
+        if (!loggedInUser) {
+            showToast('Silakan login untuk mengexport data.', 'danger');
+            return;
+        }
+
+        const userReports = laporanRiwayat[loggedInUser] || [];
+        let filteredReports = [...userReports]; // Copy to apply current filters
+
+        // Apply filters (same logic as displayRiwayatLaporan)
+        const start = historyStartDate.value ? new Date(historyStartDate.value) : null;
+        const end = historyEndDate.value ? new Date(historyEndDate.value) : null;
+        const keyword = searchKeyword.value.toLowerCase();
+        const minJamKerja = parseFloat(filterJamKerjaMin.value) || 0;
+        const maxJamKerja = parseFloat(filterJamKerjaMax.value) || 24;
+
+        filteredReports = filteredReports.filter(report => {
+            const reportDate = new Date(report.tanggal);
+            const matchesDate = (!start || reportDate >= start) && (!end || reportDate <= end);
+            const matchesKeyword = !keyword || report.keterangan.toLowerCase().includes(keyword);
+            const matchesJamKerja = report.jamKerja >= minJamKerja && report.jamKerja <= maxJamKerja;
+            return matchesDate && matchesKeyword && matchesJamKerja;
+        });
+
+        if (filteredReports.length === 0) {
+            showToast('Tidak ada laporan untuk di-export dengan filter saat ini.', 'warning');
+            return;
+        }
+
+        // Prepare data for CSV
+        const csvData = filteredReports.map(report => ({
+            "ID Laporan": report.id,
+            "Tanggal Laporan": report.tanggal,
+            "Nama Pengurus": report.nama,
+            "Jam Kerja": report.jamKerja,
+            "Keterangan": report.keterangan.replace(/"/g, '""'), // Handle double quotes in text
+            "URL Foto (Base64)": report.fotoBase64 || '', // Include photo data as URL/Base64
+            "Waktu Dibuat": new Date(report.timestamp).toLocaleString('id-ID'),
+            "Waktu Diperbarui": report.updatedAt ? new Date(report.updatedAt).toLocaleString('id-ID') : ''
+        }));
+
+        // Convert array of objects to CSV string
+        const csv = PapaParse.unparse(csvData);
+
+        const blob = new Blob([csv], {
+            type: 'text/csv;charset=utf-8;'
+        });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `laporan_${loggedInUser}_${new Date().toISOString().slice(0,10)}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast('Laporan berhasil di-export ke CSV!', 'success');
+        addNotification(`Laporan CSV untuk ${loggedInUser} diunduh.`);
+    }
+
+
+    // --- Event Listeners ---
+    loginButton.addEventListener('click', handleLogin);
+    logoutButton.addEventListener('click', handleLogout);
+
+    navTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = document.querySelector(tab.dataset.tabTarget);
+            contentSections.forEach(section => section.classList.remove('active'));
+            navTabs.forEach(t => t.classList.remove('active'));
+            target.classList.add('active');
+            tab.classList.add('active');
+
+            // Specific actions on tab change
+            if (tab.dataset.tabTarget === '#riwayat') {
+                displayRiwayatLaporan();
+            } else if (tab.dataset.tabTarget === '#dashboard') {
+                updateDashboard();
+                renderMonthlyReportsChart();
+            } else if (tab.dataset.tabTarget === '#lapor') {
+                if (!editingReportId) { // Only clear form if not in editing mode
+                    clearForm();
+                }
+                namaField.value = loggedInUser; // Ensure nama field is pre-filled
+            }
+        });
     });
 
+    reportForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!validateForm()) {
+            showToast('Mohon lengkapi semua kolom yang wajib diisi.', 'danger');
+            return;
+        }
+
+        const tanggal = tanggalField.value;
+        const nama = namaField.value;
+        const jamKerja = jamKerjaField.value;
+        const keterangan = keteranganField.value;
+        const fotoBase64 = imagePreview.src === '#' || imagePreview.style.display === 'none' ? null : imagePreview.src;
+
+        saveReport(tanggal, nama, jamKerja, keterangan, fotoBase64);
+    });
+
+    cancelEditBtn.addEventListener('click', () => {
+        clearForm();
+        showToast('Edit laporan dibatalkan.', 'info');
+    });
+
+    fotoLaporanInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            imagePreview.src = '#';
+            imagePreview.style.display = 'none';
+        }
+    });
+
+    // Filtering and Export Events
+    applyHistoryFiltersBtn.addEventListener('click', displayRiwayatLaporan);
+    clearHistoryFiltersBtn.addEventListener('click', () => {
+        historyStartDate.value = today;
+        historyEndDate.value = today;
+        searchKeyword.value = '';
+        filterJamKerjaMin.value = '';
+        filterJamKerjaMax.value = '';
+        sortBy.value = 'timestamp';
+        sortOrder.value = 'desc';
+        displayRiwayatLaporan();
+        showToast('Filter riwayat laporan direset.', 'info');
+    });
+    exportReportsCSVBtn.addEventListener('click', exportReportsToCSV);
+    deleteAllUserReportsBtn.addEventListener('click', deleteAllUserReports);
+
+
+    // PDF Events
+    generatePrintBtn.addEventListener('click', generatePdfPreview);
+    downloadPdfButton.addEventListener('click', downloadPdfReport);
+
+
+    // Data Management Events
+    backupUserDataBtn.addEventListener('click', backupUserData);
+    restoreInput.addEventListener('change', (event) => restoreUserData(event));
+    restoreUserDataBtn.addEventListener('click', () => {
+        // Trigger the file input click programmatically
+        restoreInput.click();
+    });
+    deleteAllReportsGlobalBtn.addEventListener('click', deleteAllReportsGlobally);
+
+
     function activateTab(tabId) {
-      // Find the tab element and simulate click
-      const targetTab = document.querySelector(`.nav-tabs li[data-tab-target="#${tabId}"]`);
-      if (targetTab) {
-        targetTab.click();
-      }
+        // Find the tab element and simulate click
+        const targetTab = document.querySelector(`.nav-tabs li[data-tab-target=\"#${tabId}\"]`);
+        if (targetTab) {
+            targetTab.click();
+        }
     }
 
     // Set default date for print/history filters
@@ -1985,11 +2071,11 @@
 
     // Check login state on page load
     window.onload = () => {
-      if (loggedInUser) {
-        showMainApp(loggedInUser);
-      } else {
-        showLoginScreen();
-      }
+        if (loggedInUser) {
+            showMainApp(loggedInUser);
+        } else {
+            showLoginScreen();
+        }
     };
 
     // Removed the populate login select with predefined users loop
