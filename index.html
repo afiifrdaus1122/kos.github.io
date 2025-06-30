@@ -754,8 +754,7 @@
           <select id="currentUser" class="user-select">
             <option value="">Pilih Pengurus</option>
             <option>Happy</option>
-            <option>Tomi</option>
-            <option>Indra</option>
+            <option>Tomi</            <option>Indra</option>
             <option>Afi</option>
             <option>Amanda</option>
             <option>Nurul</option>
@@ -955,7 +954,17 @@
                       <button id="deleteAllReportsGlobalBtn" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Hapus Semua Riwayat</button>
                       <p style="color: var(--danger); font-size: 12px; margin-top: 5px;">*Tindakan ini akan menghapus SEMUA laporan dari SEMUA pengurus dan tidak dapat dibatalkan!</p>
                   </div>
-          
+              </div>
+              <div class="card" style="margin-top: 20px;">
+                  <h2 class="card-title"><i class="fas fa-exclamation-circle"></i> Catatan Penting: Notifikasi Eksternal</h2>
+                  <p style="font-size: 14px; line-height: 1.5; color: var(--dark);">
+                      Aplikasi ini berjalan sepenuhnya di browser (sisi klien), sehingga <strong>tidak dapat secara langsung mengirim notifikasi ke email atau WhatsApp</strong>.
+                      Untuk fungsionalitas pengiriman notifikasi laporan harian secara otomatis ke
+                      <strong style="color: var(--primary-dark);">afifirdaus1122@gmail.com</strong> dan WhatsApp
+                      <strong style="color: var(--primary-dark);">085289691249</strong>,
+                      dibutuhkan integrasi dengan sistem backend (server) dan layanan API eksternal.
+                      Fungsi yang ada saat ini hanya mencatat laporan secara lokal di browser Anda.
+                  </p>
               </div>
           </section>
 
@@ -1607,6 +1616,10 @@
         return reportDate >= start && reportDate <= end;
       });
 
+      // Calculate total jam kerja for the displayed reports
+      const totalJamKerjaPdf = reportsToPrint.reduce((sum, report) => sum + parseInt(report.jamKerja || 0), 0);
+
+
       reportsToPrint.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
 
       pdfPreviewContainer.innerHTML = '';
@@ -1621,7 +1634,7 @@
         return;
       }
 
-      const headerHtml = `<h3>Laporan Harian Kos Baik.com<br>Pengurus: ${loggedInUser}<br>Periode: ${new Date(startDate).toLocaleDateString('id-ID')} - ${new Date(endDate).toLocaleDateString('id-ID')}</h3><hr>`;
+      const headerHtml = `<h3>Laporan Harian Kos Baik.com<br>Pengurus: ${loggedInUser}<br>Periode: ${new Date(startDate).toLocaleDateString('id-ID')} - ${new Date(endDate).toLocaleDateString('id-ID')}<br>Total Jam Kerja: ${totalJamKerjaPdf} Jam</h3><hr>`;
       pdfPreviewContainer.innerHTML += headerHtml;
 
       reportsToPrint.forEach(report => {
@@ -1663,6 +1676,16 @@
       const lineHeight = 7;
       const maxPageHeight = doc.internal.pageSize.height - margin;
 
+      // Recalculate total jam kerja for the PDF
+      let reportsInPreview = (laporanRiwayat[loggedInUser] || []).filter(report => {
+        const reportDate = new Date(report.tanggal);
+        const start = new Date(printStartDate.value);
+        const end = new Date(printEndDate.value);
+        return reportDate >= start && reportDate <= end;
+      });
+      const totalJamKerjaPdf = reportsInPreview.reduce((sum, report) => sum + parseInt(report.jamKerja || 0), 0);
+
+
       doc.setFontSize(16);
       doc.text(`Laporan Harian Kos Baik.com`, doc.internal.pageSize.width / 2, yOffset, { align: 'center' });
       yOffset += lineHeight;
@@ -1670,6 +1693,8 @@
       doc.text(`Pengurus: ${loggedInUser}`, doc.internal.pageSize.width / 2, yOffset, { align: 'center' });
       yOffset += lineHeight;
       doc.text(`Periode: ${new Date(startDate).toLocaleDateString('id-ID')} - ${new Date(endDate).toLocaleDateString('id-ID')}`, doc.internal.pageSize.width / 2, yOffset, { align: 'center' });
+      yOffset += lineHeight; // Add line for total jam kerja
+      doc.text(`Total Jam Kerja: ${totalJamKerjaPdf} Jam`, doc.internal.pageSize.width / 2, yOffset, { align: 'center' });
       yOffset += lineHeight * 2;
 
       const reportItems = pdfPreviewContainer.querySelectorAll('.pdf-report-item');
