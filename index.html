@@ -1,0 +1,1984 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Kos baik.com - Sistem Laporan Harian</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+  <!-- Library untuk membuat PDF dari JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- html2canvas dibutuhkan jika ingin mengkonversi elemen HTML kompleks ke PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #3498db;
+      --primary-dark: #2980b9;
+      --secondary: #2ecc71;
+      --secondary-dark: #27ae60;
+      --danger: #e74c3c;
+      --danger-dark: #c0392b;
+      --warning: #f39c12;
+      --dark: #2c3e50;
+      --light: #ecf0f1;
+      --gray: #95a5a6;
+      --border: #bdc3c7;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #3498db 0%, #8e44ad 100%);
+      color: #333;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 10px;
+      display: flex; /* Ensure body takes full height and centers content */
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .app-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      width: 100%; /* Ensure it fills parent */
+    }
+
+    /* Styles for the main application wrapper, hidden by default */
+    .main-app-wrapper {
+        display: none; /* Hidden by default, shown after login */
+        width: 100%;
+        max-width: 1200px; /* Match app-container max-width */
+        height: 100%;
+        margin: auto;
+    }
+    
+    /* Login Screen Styles */
+    .login-container {
+        background: white;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+    }
+
+    .login-container h2 {
+        color: var(--dark);
+        margin-bottom: 25px;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .login-container .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .login-container label {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .login-container input[type="password"],
+    .login-container select {
+        padding: 14px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        font-size: 16px;
+    }
+
+    .login-container button {
+        width: 100%;
+        padding: 15px;
+        font-size: 18px;
+        border-radius: 10px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .login-container button:hover {
+        background: var(--primary-dark);
+    }
+
+    .login-error {
+        color: var(--danger);
+        font-size: 14px;
+        margin-top: 15px;
+        display: none; /* Hidden by default */
+    }
+
+    /* Header Styles */
+    header {
+      background: var(--dark);
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .logo-icon {
+      background: var(--primary);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    
+    .logo-text {
+      font-size: 20px;
+      font-weight: 700;
+    }
+    
+    .logo-text span {
+      color: var(--secondary);
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px; /* Increased gap */
+    }
+    
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .user-name-display { /* New style for displaying logged-in user's name */
+        color: white;
+        font-weight: 500;
+        font-size: 15px;
+    }
+
+    .logout-btn { /* Style for the new logout button */
+        background: var(--danger);
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .logout-btn:hover {
+        background: var(--danger-dark);
+    }
+
+    .user-select {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      outline: none;
+      cursor: pointer;
+      font-size: 14px;
+      display: none; /* Hide this select in header after login implemented */
+    }
+    .user-select option {
+      background: var(--dark);
+      color: white;
+    }
+    
+    /* Navigation */
+    nav {
+      background: var(--primary);
+      padding: 0 15px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    
+    .nav-tabs {
+      display: flex;
+      list-style: none;
+    }
+    
+    .nav-tabs li {
+      padding: 12px 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-bottom: 3px solid transparent;
+      font-weight: 500;
+      font-size: 14px;
+      color: white;
+    }
+    
+    .nav-tabs li.active {
+      background: rgba(255, 255, 255, 0.2);
+      border-bottom: 3px solid var(--secondary);
+    }
+    
+    .nav-tabs li:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .nav-tabs i {
+      margin-right: 5px;
+    }
+    
+    /* Main Content */
+    .main-content {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    
+    .content-section {
+      display: none;
+    }
+    
+    .content-section.active {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .card-title {
+      font-size: 18px;
+      color: var(--dark);
+      margin-bottom: 15px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--light);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .card-title i {
+      color: var(--primary);
+      font-size: 18px;
+    }
+    
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 15px;
+      position: relative; /* For error messages */
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+    }
+    
+    select, input, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    
+    select:focus, input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+
+    input.error, select.error, textarea.error {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+    }
+    
+    .error-message {
+      color: var(--danger);
+      font-size: 12px;
+      margin-top: 5px;
+      display: block;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+    
+    .btn-success {
+      background: var(--secondary);
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background: var(--secondary-dark);
+    }
+    
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: var(--danger-dark);
+    }
+
+    .btn-warning {
+      background: var(--warning);
+      color: white;
+    }
+
+    .btn-warning:hover {
+      background: #e67e22;
+    }
+    
+    /* Report History */
+    .history-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 15px;
+        align-items: flex-end;
+    }
+    .history-filters .form-group {
+        flex: 1;
+        min-width: 150px;
+        margin-bottom: 0;
+    }
+    .history-filters .form-group.half-width {
+        flex-basis: calc(50% - 5px); /* For sort/order */
+        min-width: 120px;
+    }
+    .history-filters .form-group.full-width {
+        flex-basis: 100%;
+        min-width: unset;
+    }
+
+    .history-filters .btn {
+        flex-shrink: 0;
+        align-self: flex-start; /* Align buttons with filters */
+        margin-top: 22px; /* Adjust as needed for alignment */
+    }
+    
+    .history-item {
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 12px;
+      background: #f9fbfd;
+      transition: all 0.3s;
+      position: relative;
+    }
+    
+    .history-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      border-color: var(--primary);
+    }
+    
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .report-meta {
+      display: flex;
+      gap: 10px;
+      color: var(--gray);
+      font-size: 12px;
+    }
+    
+    .report-meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .report-actions {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      display: flex;
+      gap: 8px;
+    }
+    
+    .action-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.05);
+      color: var(--dark);
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 12px;
+    }
+    
+    .action-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .report-content {
+      line-height: 1.6;
+      font-size: 14px;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 30px 15px;
+      color: var(--gray);
+    }
+    
+    .empty-state i {
+      font-size: 40px;
+      margin-bottom: 12px;
+      color: #ddd;
+    }
+
+    .empty-state-small {
+      text-align: center;
+      padding: 20px 0;
+      color: #95a5a6;
+    }
+
+    .empty-state-small i {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    
+    /* Toast Notification */
+    .toast-notification {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--secondary);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out, bottom 0.3s ease-in-out;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toast-notification.show {
+      opacity: 1;
+      bottom: 30px;
+    }
+
+    /* Notification Item in Sidebar */
+    .notification-item {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .notification-item:last-child {
+      border-bottom: none;
+    }
+    
+    /* Download PDF Section Specific Styles */
+    .download-controls { /* Changed from print-controls */
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 20px;
+        align-items: flex-end;
+    }
+    .download-controls .form-group { /* Changed from print-controls */
+        flex: 1;
+        min-width: 150px;
+        margin-bottom: 0; /* Override default form-group margin */
+    }
+    .download-controls .btn { /* Changed from print-controls */
+        flex-shrink: 0;
+    }
+    .pdf-preview { /* Changed from print-preview */
+        border: 1px solid var(--border);
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #fcfcfc;
+        min-height: 200px;
+        overflow-y: auto;
+    }
+    .pdf-preview h3 { /* Changed from print-preview */
+        text-align: center;
+        margin-bottom: 20px;
+        color: var(--dark);
+    }
+    .pdf-report-item { /* Changed from print-report-item */
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px dashed #eee;
+    }
+    .pdf-report-item:last-child { /* Changed from print-report-item */
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    .pdf-report-item p { /* Changed from print-report-item */
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
+    .pdf-report-item strong { /* Changed from print-report-item */
+        color: var(--primary-dark);
+    }
+
+    /* Chart styles */
+    .chart-container {
+        position: relative;
+        height: 300px; /* Fixed height for charts */
+        margin-bottom: 20px;
+    }
+    
+    /* Footer */
+    footer {
+      background: var(--dark);
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 13px;
+    }
+
+    /* New styles for image upload */
+    .image-upload-preview {
+      margin-top: 10px;
+      text-align: center;
+    }
+    .image-upload-preview img {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      display: none; /* Hidden by default */
+    }
+    
+    /* Responsive Design */
+    @media (min-width: 768px) {
+      .main-content {
+        grid-template-columns: 1fr 300px;
+      }
+    }
+    
+    @media (max-width: 600px) {
+      .nav-tabs li span {
+        display: none;
+      }
+      
+      .nav-tabs li i {
+        margin-right: 0;
+        font-size: 16px;
+      }
+      
+      .history-controls {
+        flex-direction: column;
+      }
+      
+      .report-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      
+      .report-meta {
+        flex-wrap: wrap;
+      }
+      
+      .logo-text {
+        font-size: 18px;
+      }
+      
+      .user-info {
+        font-size: 14px;
+      }
+      
+      .user-avatar {
+        width: 32px;
+        height: 32px;
+      }
+
+      .user-select {
+        padding: 6px 10px;
+        font-size: 13px;
+      }
+
+      .app-container {
+        border-radius: 0;
+        margin: 0;
+        min-height: 100vh;
+      }
+      header {
+        padding: 15px;
+      }
+      .main-content {
+        padding: 15px;
+      }
+      .card {
+        padding: 15px;
+      }
+      .download-controls, .history-filters { /* Changed from print-controls */
+          flex-direction: column;
+          align-items: stretch;
+      }
+      .download-controls .form-group, .history-filters .form-group { /* Changed from print-controls */
+          width: 100%;
+      }
+      .history-filters .form-group.half-width {
+          flex-basis: 100%; /* Full width on small screens */
+      }
+      .download-controls .btn, .history-filters .btn { /* Changed from print-controls */
+          width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Container -->
+  <div class="login-container" id="loginContainer">
+    <h2><i class="fas fa-lock" style="color: var(--primary);"></i> Login KosBaik.com</h2>
+    <div class="form-group">
+      <label for="loginUsername"><i class="fas fa-user"></i> Nama Pengurus:</label>
+      <select id="loginUsername" required>
+        <option value="">Pilih Pengurus</option>
+        <option>Happy</option>
+        <option>Tomi</option>
+        <option>Indra</option>
+        <option>Afi</option>
+        <option>Amanda</option>
+        <option>Nurul</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="loginPassword"><i class="fas fa-key"></i> Password:</label>
+      <input type="password" id="loginPassword" required placeholder="Masukkan password Anda">
+    </div>
+    <div class="login-error" id="loginError"></div>
+    <button id="loginButton">Login</button>
+  </div>
+
+  <!-- Main Application Wrapper (Initially hidden) -->
+  <div class="main-app-wrapper" id="mainAppWrapper">
+    <div class="app-container">
+      <header>
+        <div class="logo">
+          <div class="logo-icon"><i class="fas fa-home"></i></div>
+          <div class="logo-text">Kos <span>baik.com</span></div>
+        </div>
+        <div class="user-info">
+          <!-- Display logged in user name -->
+          <div class="user-avatar" id="header-avatar">-</div>
+          <div class="user-name-display" id="loggedInUserName"></div>
+          <!-- Logout button -->
+          <button id="logoutButton" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+          <!-- Original user select (now hidden, logic handled by login) -->
+          <select id="currentUser" class="user-select">
+            <option value="">Pilih Pengurus</option>
+            <option>Happy</option>
+            <option>Tomi</option>
+            <option>Indra</option>
+            <option>Afi</option>
+            <option>Amanda</option>
+            <option>Nurul</option>
+          </select>
+        </div>
+      </header>
+
+      <nav>
+        <ul class="nav-tabs">
+          <li data-tab-target="#dashboard" class="active"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></li>
+          <li data-tab-target="#lapor"><i class="fas fa-plus-circle"></i> <span>Buat Laporan</span></li>
+          <li data-tab-target="#riwayat"><i class="fas fa-history"></i> <span>Riwayat Laporan</span></li>
+          <li data-tab-target="#downloadPdfReportSection"><i class="fas fa-file-pdf"></i> <span>Download Laporan</span></li>
+          <li data-tab-target="#pengaturan"><i class="fas fa-cog"></i> <span>Pengaturan</span></li>
+        </ul>
+      </nav>
+
+      <div class="main-content">
+        <div class="content-left">
+          <section id="dashboard" class="content-section active">
+            <div class="card">
+              <h2 class="card-title"><i class="fas fa-info-circle"></i> Ringkasan Laporan Anda</h2>
+              <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-around; text-align: center;">
+                <div style="flex: 1; min-width: 120px; background: #e8f5e9; padding: 15px; border-radius: 8px; font-weight: bold; color: var(--dark);">
+                  Total Laporan<br><span id="dashboard-total-reports" style="font-size: 2em; color: var(--secondary);">0</span>
+                </div>
+                <div style="flex: 1; min-width: 120px; background: #e3f2fd; padding: 15px; border-radius: 8px; font-weight: bold; color: var(--dark);">
+                  Total Jam Kerja<br><span id="dashboard-total-hours" style="font-size: 2em; color: var(--primary);">0</span>
+                </div>
+                <div style="flex: 1; min-width: 120px; background: #ffe0b2; padding: 15px; border-radius: 8px; font-weight: bold; color: var(--dark);">
+                  Terakhir Lapor<br><span id="dashboard-last-report" style="font-size: 1em; color: var(--warning);">Belum ada</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h2 class="card-title"><i class="fas fa-chart-bar"></i> Statistik Laporan Bulanan</h2>
+              <div class="chart-container">
+                  <canvas id="monthlyReportsChart"></canvas>
+              </div>
+            </div>
+
+            <div class="card">
+              <h2 class="card-title"><i class="fas fa-clipboard-list"></i> Aktivitas Laporan Terbaru Anda</h2>
+              <div id="recent-activity-container">
+                <div class="empty-state">
+                  <i class="fas fa-clipboard"></i>
+                  <p>Belum ada laporan dari Anda.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="lapor" class="content-section">
+            <div class="card">
+              <h2 class="card-title"><i class="fas fa-file-alt"></i> Buat Laporan Baru</h2>
+              <form id="reportForm">
+                <input type="hidden" id="reportIdToEdit">
+                <div class="form-group">
+                  <label for="tanggal"><i class="fas fa-calendar-alt"></i> Tanggal:</label>
+                  <input type="date" id="tanggal" required>
+                  <span class="error-message" id="tanggal-error"></span>
+                </div>
+                <div class="form-group">
+                  <label for="nama"><i class="fas fa-user"></i> Nama Pengurus:</label>
+                  <select id="nama" required disabled> <!-- Disabled as it will be set by login -->
+                    <option value="">Pilih Pengurus</option>
+                    <option>Happy</option>
+                    <option>Tomi</option>
+                    <option>Indra</option>
+                    <option>Afi</option>
+                    <option>Amanda</option>
+                    <option>Nurul</option>
+                  </select>
+                  <span class="error-message" id="nama-error"></span>
+                </div>
+                <div class="form-group">
+                  <label for="jamKerja"><i class="fas fa-hourglass-half"></i> Jam Kerja (Jam):</label>
+                  <input type="number" id="jamKerja" min="1" max="24" required>
+                  <span class="error-message" id="jamKerja-error"></span>
+                </div>
+                <div class="form-group">
+                  <label for="keterangan"><i class="fas fa-comment-dots"></i> Keterangan / Uraian Kegiatan:</label>
+                  <textarea id="keterangan" placeholder="Masukkan uraian kegiatan Anda hari ini..." required></textarea>
+                  <span class="error-message" id="keterangan-error"></span>
+                </div>
+                <div class="form-group">
+                  <label for="fotoLaporan"><i class="fas fa-camera"></i> Unggah Foto (Opsional):</label>
+                  <input type="file" id="fotoLaporan" accept="image/*">
+                  <span class="error-message" id="fotoLaporan-error"></span>
+                  <div class="image-upload-preview">
+                    <img id="imagePreview" src="#" alt="Image Preview">
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="submitReportBtn"><i class="fas fa-paper-plane"></i> Kirim Laporan</button>
+                <button type="button" class="btn btn-danger" id="cancelEditBtn" style="display: none;"><i class="fas fa-times-circle"></i> Batalkan</button>
+              </form>
+            </div>
+          </section>
+
+          <section id="riwayat" class="content-section">
+            <div class="card">
+              <h2 class="card-title"><i class="fas fa-history"></i> Riwayat Laporan Anda</h2>
+              <div class="history-filters">
+                  <div class="form-group">
+                      <label for="historyStartDate"><i class="fas fa-calendar-day"></i> Dari Tanggal:</label>
+                      <input type="date" id="historyStartDate">
+                  </div>
+                  <div class="form-group">
+                      <label for="historyEndDate"><i class="fas fa-calendar-day"></i> Sampai Tanggal:</label>
+                      <input type="date" id="historyEndDate">
+                  </div>
+                  <div class="form-group full-width">
+                      <label for="searchKeyword"><i class="fas fa-search"></i> Cari Keterangan:</label>
+                      <input type="text" id="searchKeyword" placeholder="Cari di uraian kegiatan...">
+                  </div>
+                  <div class="form-group half-width">
+                      <label for="filterJamKerjaMin"><i class="fas fa-clock"></i> Jam Kerja Min:</label>
+                      <input type="number" id="filterJamKerjaMin" min="0" max="24" placeholder="Min">
+                  </div>
+                  <div class="form-group half-width">
+                      <label for="filterJamKerjaMax"><i class="fas fa-clock"></i> Jam Kerja Max:</label>
+                      <input type="number" id="filterJamKerjaMax" min="0" max="24" placeholder="Max">
+                  </div>
+                  <div class="form-group half-width">
+                      <label for="sortBy"><i class="fas fa-sort"></i> Urutkan Berdasarkan:</label>
+                      <select id="sortBy">
+                          <option value="timestamp">Tanggal Dibuat</option>
+                          <option value="tanggal">Tanggal Laporan</option>
+                          <option value="jamKerja">Jam Kerja</option>
+                      </select>
+                  </div>
+                  <div class="form-group half-width">
+                      <label for="sortOrder"><i class="fas fa-sort-amount-down"></i> Urutan:</label>
+                      <select id="sortOrder">
+                          <option value="desc">Terbaru/Terbesar</option>
+                          <option value="asc">Terlama/Terkecil</option>
+                      </select>
+                  </div>
+                  <button id="applyHistoryFilters" class="btn btn-success"><i class="fas fa-filter"></i> Terapkan Filter</button>
+                  <button id="clearHistoryFilters" class="btn btn-warning"><i class="fas fa-sync-alt"></i> Reset</button>
+                  <button id="exportReportsCSV" class="btn btn-primary"><i class="fas fa-file-csv"></i> Export CSV</button>
+              </div>
+              <div id="riwayat-laporan-container">
+                <div class="empty-state">
+                  <i class="fas fa-folder-open"></i>
+                  <p>Silakan pilih pengurus di atas untuk melihat riwayat laporan Anda, atau belum ada laporan.</p>
+                </div>
+              </div>
+               <div class="form-group" style="margin-top: 30px;">
+                  <button id="deleteAllUserReportsBtn" class="btn btn-danger" style="width: 100%;"><i class="fas fa-trash-alt"></i> Hapus Semua Riwayat Laporan</button>
+                  <p style="color: var(--danger); font-size: 12px; margin-top: 5px;">*Tindakan ini tidak dapat dibatalkan dan hanya menghapus laporan untuk pengurus yang sedang aktif!</p>
+              </div>
+            </div>
+          </section>
+
+          <section id="downloadPdfReportSection" class="content-section">
+            <div class="card">
+              <h2 class="card-title"><i class="fas fa-file-pdf"></i> Download Laporan Anda (PDF)</h2>
+              <div class="download-controls">
+                  <div class="form-group">
+                      <label for="printStartDate"><i class="fas fa-calendar-day"></i> Dari Tanggal:</label>
+                      <input type="date" id="printStartDate">
+                  </div>
+                  <div class="form-group">
+                      <label for="printEndDate"><i class="fas fa-calendar-day"></i> Sampai Tanggal:</label>
+                      <input type="date" id="printEndDate">
+                  </div>
+                  <button id="generatePrint" class="btn btn-success"><i class="fas fa-eye"></i> Tampilkan Laporan</button>
+                  <button id="downloadPdfButton" class="btn btn-primary" style="display: none;"><i class="fas fa-download"></i> Download PDF</button>
+              </div>
+              <div class="pdf-preview" id="pdf-preview-container">
+                  <div class="empty-state">
+                      <i class="fas fa-info-circle"></i>
+                      <p>Pilih pengurus di header, lalu pilih rentang tanggal dan klik "Tampilkan Laporan" untuk melihat preview laporan.</p>
+                  </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="pengaturan" class="content-section">
+              <div class="card">
+                  <h2 class="card-title"><i class="fas fa-database"></i> Manajemen Data</h2>
+                  <div class="form-group">
+                      <label><i class="fas fa-download"></i> Backup Data Laporan Anda:</label>
+                      <button id="backupUserDataBtn" class="btn btn-primary"><i class="fas fa-file-download"></i> Download Backup (JSON)</button>
+                      <p style="color: var(--gray); font-size: 12px; margin-top: 5px;">*Hanya mengunduh laporan untuk pengurus yang sedang login.</p>
+                  </div>
+                  <div class="form-group">
+                      <label><i class="fas fa-upload"></i> Restore Data Laporan Anda:</label>
+                      <input type="file" id="restoreInput" accept=".json" class="form-control">
+                      <button id="restoreUserDataBtn" class="btn btn-success" style="margin-top: 10px;"><i class="fas fa-file-upload"></i> Unggah & Restore</button>
+                      <p style="color: var(--gray); font-size: 12px; margin-top: 5px;">*Hanya akan memulihkan data untuk pengurus yang sedang login.</p>
+                  </div>
+                  <div class="form-group" style="margin-top: 30px;">
+                      <label><i class="fas fa-exclamation-triangle"></i> Hapus Semua Riwayat Laporan (Global):</label>
+                      <button id="deleteAllReportsGlobalBtn" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Hapus Semua Riwayat</button>
+                      <p style="color: var(--danger); font-size: 12px; margin-top: 5px;">*Tindakan ini akan menghapus SEMUA laporan dari SEMUA pengurus dan tidak dapat dibatalkan!</p>
+                  </div>
+              </div>
+              <div class="card" style="margin-top: 20px;">
+                  <h2 class="card-title"><i class="fas fa-exclamation-circle"></i> Catatan Penting: Notifikasi Eksternal</h2>
+                  <p style="font-size: 14px; line-height: 1.5; color: var(--dark);">
+                      Aplikasi ini berjalan sepenuhnya di browser (sisi klien), sehingga <strong>tidak dapat secara langsung mengirim notifikasi ke email atau WhatsApp</strong>.
+                      Untuk fungsionalitas pengiriman notifikasi laporan harian secara otomatis ke
+                      <strong style="color: var(--primary-dark);">afifirdaus1122@gmail.com</strong> dan WhatsApp
+                      <strong style="color: var(--primary-dark);">085289691249</strong>,
+                      dibutuhkan integrasi dengan sistem backend (server) dan layanan API eksternal.
+                      Fungsi yang ada saat ini hanya mencatat laporan secara lokal di browser Anda.
+                  </p>
+              </div>
+          </section>
+
+        </div>
+
+        <div class="content-right">
+          <div class="card">
+            <h2 class="card-title"><i class="fas fa-bell"></i> Aktivitas Terbaru</h2>
+            <div id="notifications-container">
+              <div class="empty-state-small">
+                <i class="fas fa-bell-slash"></i>
+                <p>Belum ada aktivitas</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 class="card-title"><i class="fas fa-hashtag"></i> KosBaik.com</h2>
+            <p style="text-align: center; font-weight: bold; font-size: 18px; color: var(--primary); margin: 10px 0;">
+              #ngekos bareng baik bareng
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        &copy; 2025 Kos baik.com. All rights reserved.</footer>
+    </div>
+  </div>
+
+  <div id="toast-notification" class="toast-notification"></div>
+
+  <script>
+    // --- Data Management ---
+    // laporanRiwayat sekarang adalah objek yang menyimpan laporan per user
+    let laporanRiwayat = JSON.parse(localStorage.getItem('laporanRiwayat')) || {};
+    
+    let loggedInUser = localStorage.getItem('loggedInUser'); // Store logged in user
+
+    let editingReportId = null; 
+    let monthlyReportsChartInstance = null; // Variable to hold the Chart.js instance
+
+    // --- User Passwords (Predefined) ---
+    // Nama-nama pengurus dan password sudah didefinisikan di sini.
+    // Pastikan daftar di HTML <select> sesuai dengan ini.
+    const userPasswords = {
+        'Happy': 'kosbaik1',
+        'Tomi': 'kosbaik2',
+        'Indra': 'kosbaik3',
+        'Afi': 'kosbaik4',
+        'Amanda': 'kosbaik5',
+        'Nurul': 'kosbaik6'
+    };
+
+    // --- HTML Elements ---
+    // Login elements
+    const loginContainer = document.getElementById('loginContainer');
+    const loginUsernameSelect = document.getElementById('loginUsername');
+    const loginPasswordInput = document.getElementById('loginPassword');
+    const loginButton = document.getElementById('loginButton');
+    const loginErrorDisplay = document.getElementById('loginError');
+    const mainAppWrapper = document.getElementById('mainAppWrapper');
+
+    // Header elements
+    const headerAvatar = document.getElementById('header-avatar');
+    const loggedInUserNameDisplay = document.getElementById('loggedInUserName');
+    const logoutButton = document.getElementById('logoutButton');
+    const currentUserSelect = document.getElementById('currentUser'); // Hidden, but still needed for options
+
+    // Navigation
+    const navTabs = document.querySelectorAll('.nav-tabs li');
+    const contentSections = document.querySelectorAll('.content-section');
+
+    // Report Form elements
+    const reportForm = document.getElementById('reportForm');
+    const tanggalInput = document.getElementById('tanggal');
+    const namaField = document.getElementById('nama'); // This will be pre-filled after login
+    const jamKerjaInput = document.getElementById('jamKerja');
+    const keteranganInput = document.getElementById('keterangan');
+    const fotoLaporanInput = document.getElementById('fotoLaporan');
+    const imagePreview = document.getElementById('imagePreview');
+    const submitReportBtn = document.getElementById('submitReportBtn');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const reportIdToEditField = document.getElementById('reportIdToEdit');
+
+    // Report History elements
+    const riwayatLaporanContainer = document.getElementById('riwayat-laporan-container');
+    const historyStartDate = document.getElementById('historyStartDate');
+    const historyEndDate = document.getElementById('historyEndDate');
+    const searchKeyword = document.getElementById('searchKeyword');
+    const filterJamKerjaMin = document.getElementById('filterJamKerjaMin');
+    const filterJamKerjaMax = document.getElementById('filterJamKerjaMax');
+    const sortBy = document.getElementById('sortBy');
+    const sortOrder = document.getElementById('sortOrder');
+    const applyHistoryFiltersBtn = document.getElementById('applyHistoryFilters');
+    const clearHistoryFiltersBtn = document.getElementById('clearHistoryFilters');
+    const exportReportsCSVBtn = document.getElementById('exportReportsCSV');
+    const deleteAllUserReportsBtn = document.getElementById('deleteAllUserReportsBtn');
+
+    // Download PDF section elements
+    const downloadPdfReportSection = document.getElementById('downloadPdfReportSection');
+    const printStartDate = document.getElementById('printStartDate');
+    const printEndDate = document.getElementById('printEndDate');
+    const generatePrintBtn = document.getElementById('generatePrint');
+    const downloadPdfButton = document.getElementById('downloadPdfButton');
+    const pdfPreviewContainer = document.getElementById('pdf-preview-container');
+
+    // Settings elements
+    const backupUserDataBtn = document.getElementById('backupUserDataBtn');
+    const restoreInput = document.getElementById('restoreInput');
+    const restoreUserDataBtn = document.getElementById('restoreUserDataBtn');
+    const deleteAllReportsGlobalBtn = document.getElementById('deleteAllReportsGlobalBtn');
+
+    // Dashboard elements
+    const monthlyReportsChartCtx = document.getElementById('monthlyReportsChart').getContext('2d');
+    const notificationsContainer = document.getElementById('notifications-container');
+
+
+    // --- Utility Functions ---
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast-notification');
+      toast.textContent = message;
+      toast.className = `toast-notification show ${type}`;
+      setTimeout(() => {
+        toast.className = toast.className.replace('show', '');
+      }, 3000);
+    }
+
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    function generateUniqueId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    function validateForm(form) {
+      let isValid = true;
+      const fields = form.querySelectorAll('[required]:not([disabled])'); // Only validate non-disabled fields
+      fields.forEach(field => {
+        const errorDisplay = document.getElementById(`${field.id}-error`);
+        if (!field.value) {
+          field.classList.add('error');
+          if (errorDisplay) errorDisplay.textContent = 'Harap isi bidang ini.';
+          isValid = false;
+        } else {
+          field.classList.remove('error');
+          if (errorDisplay) field.textContent = '';
+        }
+      });
+
+      // Specific validation for jamKerja
+      const jamKerjaVal = parseInt(jamKerjaInput.value);
+      if (jamKerjaInput.value && (jamKerjaVal < 1 || jamKerjaVal > 24)) {
+        jamKerjaInput.classList.add('error');
+        document.getElementById('jamKerja-error').textContent = 'Jam kerja harus antara 1 dan 24.';
+        isValid = false;
+      } else if (jamKerjaInput.value) {
+        jamKerjaInput.classList.remove('error');
+        document.getElementById('jamKerja-error').textContent = '';
+      }
+
+      return isValid;
+    }
+
+    function clearForm() {
+      reportForm.reset();
+      tanggalInput.value = ''; // Ensure date input is cleared properly
+      imagePreview.src = '#';
+      imagePreview.style.display = 'none';
+      submitReportBtn.textContent = 'Kirim Laporan';
+      submitReportBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Laporan';
+      cancelEditBtn.style.display = 'none';
+      editingReportId = null;
+      reportIdToEditField.value = '';
+      // Clear all error messages and classes
+      document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+      document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+    }
+
+    function saveLaporanRiwayat() {
+      localStorage.setItem('laporanRiwayat', JSON.stringify(laporanRiwayat));
+    }
+
+    function updateNotifications(message) {
+      const notificationItem = document.createElement('div');
+      notificationItem.className = 'notification-item';
+      notificationItem.innerHTML = `
+        <i class="fas fa-info-circle" style="color: var(--primary);"></i> ${message}
+        <span style="font-size: 0.8em; color: var(--gray); display: block; margin-top: 5px;">${new Date().toLocaleString('id-ID')}</span>
+      `;
+      if (notificationsContainer.querySelector('.empty-state-small')) {
+        notificationsContainer.innerHTML = '';
+      }
+      notificationsContainer.prepend(notificationItem);
+      while (notificationsContainer.children.length > 5) {
+        notificationsContainer.removeChild(notificationsContainer.lastChild);
+      }
+    }
+
+
+    // --- Dashboard Functions ---
+
+    function updateDashboard() {
+      if (!loggedInUser) return; // Only update if a user is logged in
+      // Access reports for the loggedInUser
+      const userReports = laporanRiwayat[loggedInUser] || [];
+
+      document.getElementById('dashboard-total-reports').textContent = userReports.length;
+
+      const totalHours = userReports.reduce((sum, report) => sum + parseInt(report.jamKerja || 0), 0);
+      document.getElementById('dashboard-total-hours').textContent = totalHours;
+
+      const lastReportElement = document.getElementById('dashboard-last-report');
+      if (userReports.length > 0) {
+        const latestReport = userReports.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))[0];
+        lastReportElement.textContent = new Date(latestReport.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+      } else {
+        lastReportElement.textContent = 'Belum ada';
+      }
+
+      renderMonthlyReportsChart(userReports);
+      renderRecentActivity(userReports);
+    }
+
+    function renderMonthlyReportsChart(reports) {
+      if (monthlyReportsChartInstance) {
+        monthlyReportsChartInstance.destroy(); // Destroy previous chart instance
+      }
+
+      const monthlyData = {};
+      reports.forEach(report => {
+        const date = new Date(report.tanggal);
+        const monthYear = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+        if (!monthlyData[monthYear]) {
+          monthlyData[monthYear] = 0;
+        }
+        monthlyData[monthYear] += parseInt(report.jamKerja || 0);
+      });
+
+      const sortedMonths = Object.keys(monthlyData).sort();
+      const chartLabels = sortedMonths.map(monthYear => {
+        const [year, month] = monthYear.split('-');
+        const date = new Date(year, parseInt(month) - 1, 1);
+        return date.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
+      });
+      const chartData = sortedMonths.map(month => monthlyData[month]);
+
+      monthlyReportsChartInstance = new Chart(monthlyReportsChartCtx, {
+        type: 'bar',
+        data: {
+          labels: chartLabels,
+          datasets: [{
+            label: 'Total Jam Kerja',
+            data: chartData,
+            backgroundColor: getCssVariable('--primary'),
+            borderColor: getCssVariable('--primary-dark'),
+            borderWidth: 1,
+            borderRadius: 5,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Jam Kerja (Jam)'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Bulan'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return `Jam Kerja: ${context.raw} jam`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function getCssVariable(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    function renderRecentActivity(reports) {
+      recentActivityContainer.innerHTML = '';
+      if (!loggedInUser) {
+        recentActivityContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-clipboard"></i>
+            <p>Belum ada laporan dari Anda.</p>
+          </div>
+        `;
+        return;
+      }
+      const userReports = laporanRiwayat[loggedInUser] || []; // Access reports for the loggedInUser
+
+      if (userReports.length === 0) {
+        recentActivityContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-clipboard"></i>
+            <p>Belum ada laporan dari Anda.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const sortedReports = [...userReports].sort((a, b) => b.timestamp - a.timestamp).slice(0, 5); // Show top 5
+
+      sortedReports.forEach(report => {
+        const reportElement = document.createElement('div');
+        reportElement.className = 'history-item';
+        reportElement.innerHTML = `
+          <div class="report-header">
+            <div class="report-meta">
+              <span><i class="fas fa-calendar-alt"></i> ${new Date(report.tanggal).toLocaleDateString('id-ID')}</span>
+              <span><i class="fas fa-hourglass-half"></i> ${report.jamKerja} Jam</span>
+              <span><i class="fas fa-user"></i> ${report.nama}</span>
+            </div>
+          </div>
+          <div class="report-content">
+            <p>${report.keterangan}</p>
+            ${report.foto ? `<img src="${report.foto}" alt="Foto Laporan" style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 10px;">` : ''}
+          </div>
+        `;
+        recentActivityContainer.appendChild(reportElement);
+      });
+    }
+
+
+    // --- Report Form Functions ---
+
+    reportForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (!loggedInUser) {
+          showToast('Harap login terlebih dahulu.', 'danger');
+          return;
+      }
+      if (!validateForm(reportForm)) {
+        showToast('Harap lengkapi semua bidang yang wajib diisi.', 'danger');
+        return;
+      }
+
+      const tanggal = tanggalInput.value;
+      const nama = loggedInUser; // Use the logged in user
+      const jamKerja = jamKerjaInput.value;
+      const keterangan = keteranganInput.value;
+      const fotoFile = fotoLaporanInput.files[0];
+
+      let fotoBase64 = '';
+      if (fotoFile) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          fotoBase64 = event.target.result;
+          saveReport(tanggal, nama, jamKerja, keterangan, fotoBase64);
+        };
+        reader.readAsDataURL(fotoFile);
+      } else {
+        saveReport(tanggal, nama, jamKerja, keterangan, fotoBase64);
+      }
+    });
+
+    function saveReport(tanggal, nama, jamKerja, keterangan, fotoBase64) {
+      // Ensure the user's report array exists
+      if (!laporanRiwayat[nama]) {
+          laporanRiwayat[nama] = [];
+      }
+
+      if (editingReportId) {
+        const reportIndex = laporanRiwayat[nama].findIndex(report => report.id === editingReportId);
+        if (reportIndex !== -1) {
+          laporanRiwayat[nama][reportIndex] = {
+            ...laporanRiwayat[nama][reportIndex], // Keep old timestamp
+            tanggal,
+            nama,
+            jamKerja: parseInt(jamKerja),
+            keterangan,
+            foto: fotoBase64
+          };
+          showToast('Laporan berhasil diperbarui!', 'success');
+          updateNotifications(`Laporan pada ${new Date(tanggal).toLocaleDateString('id-ID')} oleh ${capitalizeFirstLetter(nama)} berhasil diperbarui.`);
+        }
+      } else {
+        const newReport = {
+          id: generateUniqueId(),
+          timestamp: Date.now(),
+          tanggal,
+          nama,
+          jamKerja: parseInt(jamKerja),
+          keterangan,
+          foto: fotoBase64
+        };
+        laporanRiwayat[nama].unshift(newReport); // Add to the beginning of the specific user's array
+        showToast('Laporan berhasil ditambahkan!', 'success');
+        updateNotifications(`Laporan baru pada ${new Date(tanggal).toLocaleDateString('id-ID')} oleh ${capitalizeFirstLetter(nama)} berhasil ditambahkan.`);
+      }
+
+      saveLaporanRiwayat();
+      clearForm();
+      displayRiwayatLaporan();
+      updateDashboard();
+      activateTab('riwayat');
+    }
+
+    fotoLaporanInput.addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          imagePreview.src = e.target.result;
+          imagePreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        imagePreview.src = '#';
+        imagePreview.style.display = 'none';
+      }
+    });
+
+
+    // --- Report History Functions ---
+
+    function displayRiwayatLaporan() {
+      riwayatLaporanContainer.innerHTML = '';
+      if (!loggedInUser) {
+        riwayatLaporanContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-folder-open"></i>
+            <p>Silakan login terlebih dahulu untuk melihat riwayat laporan Anda.</p>
+          </div>
+        `;
+        return;
+      }
+
+      let filteredReports = laporanRiwayat[loggedInUser] || []; // Access reports for the loggedInUser
+
+      const startDate = historyStartDate.value ? new Date(historyStartDate.value) : null;
+      const endDate = historyEndDate.value ? new Date(historyEndDate.value) : null;
+      const keyword = searchKeyword.value.toLowerCase();
+      const minJamKerja = filterJamKerjaMin.value ? parseInt(filterJamKerjaMin.value) : null;
+      const maxJamKerja = filterJamKerjaMax.value ? parseInt(filterJamKerjaMax.value) : null;
+
+      filteredReports = filteredReports.filter(report => {
+        const reportDate = new Date(report.tanggal);
+        const reportKeterangan = report.keterangan.toLowerCase();
+        const reportJamKerja = parseInt(report.jamKerja);
+
+        const dateMatch = (!startDate || reportDate >= startDate) && (!endDate || reportDate <= endDate);
+        const keywordMatch = !keyword || reportKeterangan.includes(keyword);
+        const jamKerjaMatch = (!minJamKerja || reportJamKerja >= minJamKerja) && (!maxJamKerja || reportJamKerja <= maxJamKerja);
+
+        return dateMatch && keywordMatch && jamKerjaMatch;
+      });
+
+      const sortByKey = sortBy.value;
+      const order = sortOrder.value;
+
+      filteredReports.sort((a, b) => {
+        let valA = a[sortByKey];
+        let valB = b[sortByKey];
+
+        if (sortByKey === 'tanggal') {
+          valA = new Date(a.tanggal);
+          valB = new Date(b.tanggal);
+        } else if (sortByKey === 'jamKerja') {
+            valA = parseInt(a.jamKerja);
+            valB = parseInt(b.jamKerja);
+        }
+
+        if (valA < valB) return order === 'asc' ? -1 : 1;
+        if (valA > valB) return order === 'asc' ? 1 : -1;
+        return 0;
+      });
+
+
+      if (filteredReports.length === 0) {
+        riwayatLaporanContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-box-open"></i>
+            <p>Tidak ada laporan yang cocok dengan filter yang Anda terapkan.</p>
+          </div>
+        `;
+        return;
+      }
+
+      filteredReports.forEach(report => {
+        const reportElement = document.createElement('div');
+        reportElement.className = 'history-item';
+        reportElement.innerHTML = `
+          <div class="report-actions">
+            <button class="action-btn" onclick="editReport('${report.id}')" title="Edit"><i class="fas fa-edit"></i></button>
+            <button class="action-btn" onclick="deleteReport('${report.id}')" title="Hapus"><i class="fas fa-trash-alt" style="color: var(--danger);"></i></button>
+          </div>
+          <div class="report-header">
+            <div class="report-meta">
+              <span><i class="fas fa-calendar-alt"></i> ${new Date(report.tanggal).toLocaleDateString('id-ID')}</span>
+              <span><i class="fas fa-hourglass-half"></i> ${report.jamKerja} Jam</span>
+              <span><i class="fas fa-user"></i> ${report.nama}</span>
+              <span style="font-size: 0.9em; color: #7f8c8d;"><i class="fas fa-clock"></i> Dibuat: ${new Date(report.timestamp).toLocaleDateString('id-ID')} ${new Date(report.timestamp).toLocaleTimeString('id-ID')}</span>
+            </div>
+          </div>
+          <div class="report-content">
+            <p>${report.keterangan}</p>
+            ${report.foto ? `<img src="${report.foto}" alt="Foto Laporan" style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 10px;">` : ''}
+          </div>
+        `;
+        riwayatLaporanContainer.appendChild(reportElement);
+      });
+    }
+
+    function editReport(id) {
+      // Access reports for the loggedInUser
+      const userReports = laporanRiwayat[loggedInUser] || [];
+      const reportToEdit = userReports.find(report => report.id === id);
+      if (reportToEdit) {
+        editingReportId = id;
+        reportIdToEditField.value = id;
+        tanggalInput.value = reportToEdit.tanggal;
+        namaField.value = reportToEdit.nama; // Will be set but disabled
+        jamKerjaInput.value = reportToEdit.jamKerja;
+        keteranganInput.value = reportToEdit.keterangan;
+        if (reportToEdit.foto) {
+          imagePreview.src = reportToEdit.foto;
+          imagePreview.style.display = 'block';
+        } else {
+          imagePreview.src = '#';
+          imagePreview.style.display = 'none';
+        }
+        submitReportBtn.textContent = 'Simpan Perubahan';
+        submitReportBtn.innerHTML = '<i class="fas fa-save"></i> Simpan Perubahan';
+        cancelEditBtn.style.display = 'inline-block';
+        activateTab('lapor');
+      }
+    }
+
+    cancelEditBtn.addEventListener('click', clearForm);
+
+    function deleteReport(id) {
+      if (confirm('Anda yakin ingin menghapus laporan ini?')) {
+        // Delete report from the specific user's array
+        if (laporanRiwayat[loggedInUser]) {
+            laporanRiwayat[loggedInUser] = laporanRiwayat[loggedInUser].filter(report => report.id !== id);
+        }
+        saveLaporanRiwayat();
+        displayRiwayatLaporan();
+        updateDashboard();
+        showToast('Laporan berhasil dihapus.', 'success');
+        updateNotifications(`Laporan berhasil dihapus.`);
+      }
+    }
+
+    applyHistoryFiltersBtn.addEventListener('click', displayRiwayatLaporan);
+    clearHistoryFiltersBtn.addEventListener('click', () => {
+      historyStartDate.value = '';
+      historyEndDate.value = '';
+      searchKeyword.value = '';
+      filterJamKerjaMin.value = '';
+      filterJamKerjaMax.value = '';
+      sortBy.value = 'timestamp';
+      sortOrder.value = 'desc';
+      displayRiwayatLaporan();
+    });
+
+    exportReportsCSVBtn.addEventListener('click', () => {
+      if (!loggedInUser) {
+          showToast('Harap login terlebih dahulu untuk ekspor CSV.', 'danger');
+          return;
+      }
+      const userReports = laporanRiwayat[loggedInUser] || [];
+      if (userReports.length === 0) {
+        showToast('Tidak ada laporan untuk diekspor.', 'warning');
+        return;
+      }
+
+      const csvData = userReports.map(report => ({
+        Tanggal: new Date(report.tanggal).toLocaleDateString('id-ID'),
+        Nama_Pengurus: report.nama,
+        Jam_Kerja: report.jamKerja,
+        Keterangan: report.keterangan.replace(/"/g, '""'), // Escape double quotes
+        Tanggal_Dibuat: new Date(report.timestamp).toLocaleString('id-ID')
+      }));
+
+      const csv = PapaParse.unparse(csvData, {
+        quotes: true // Ensure values are quoted
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute('download', `laporan_${loggedInUser}_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Data laporan berhasil diekspor ke CSV.', 'success');
+    });
+
+    deleteAllUserReportsBtn.addEventListener('click', () => {
+      if (!loggedInUser) {
+        showToast('Harap login terlebih dahulu.', 'danger');
+        return;
+      }
+      if (confirm(`Anda yakin ingin menghapus SEMUA laporan untuk pengurus ${loggedInUser}? Tindakan ini tidak dapat dibatalkan.`)) {
+        delete laporanRiwayat[loggedInUser]; // Delete the entire user's reports array
+        saveLaporanRiwayat();
+        displayRiwayatLaporan();
+        updateDashboard();
+        showToast(`Semua laporan untuk ${loggedInUser} berhasil dihapus.`, 'success');
+        updateNotifications(`Semua laporan untuk ${loggedInUser} telah dihapus.`);
+      }
+    });
+
+    // --- Download PDF Functions ---
+
+    generatePrintBtn.addEventListener('click', () => {
+      if (!loggedInUser) {
+        showToast('Harap login terlebih dahulu di header.', 'danger');
+        return;
+      }
+
+      const startDate = printStartDate.value;
+      const endDate = printEndDate.value;
+
+      if (!startDate || !endDate) {
+        showToast('Harap pilih rentang tanggal untuk laporan PDF.', 'danger');
+        return;
+      }
+
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+
+      let reportsToPrint = (laporanRiwayat[loggedInUser] || []).filter(report => {
+        const reportDate = new Date(report.tanggal);
+        return reportDate >= start && reportDate <= end;
+      });
+
+      reportsToPrint.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+
+      pdfPreviewContainer.innerHTML = '';
+      if (reportsToPrint.length === 0) {
+        pdfPreviewContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-exclamation-circle"></i>
+            <p>Tidak ada laporan yang ditemukan untuk rentang tanggal tersebut dari pengurus ini.</p>
+          </div>
+        `;
+        downloadPdfButton.style.display = 'none';
+        return;
+      }
+
+      const headerHtml = `<h3>Laporan Harian Kos Baik.com<br>Pengurus: ${loggedInUser}<br>Periode: ${new Date(startDate).toLocaleDateString('id-ID')} - ${new Date(endDate).toLocaleDateString('id-ID')}</h3><hr>`;
+      pdfPreviewContainer.innerHTML += headerHtml;
+
+      reportsToPrint.forEach(report => {
+        const reportElement = document.createElement('div');
+        reportElement.className = 'pdf-report-item';
+        reportElement.innerHTML = `
+          <p><strong>Tanggal:</strong> ${new Date(report.tanggal).toLocaleDateString('id-ID')}</p>
+          <p><strong>Jam Kerja:</strong> ${report.jamKerja} Jam</p>
+          <p><strong>Keterangan:</strong> ${report.keterangan}</p>
+          ${report.foto ? `<img src="${report.foto}" alt="Foto Laporan" style="max-width: 150px; height: auto; border-radius: 4px; margin-top: 5px;">` : ''}
+        `;
+        pdfPreviewContainer.appendChild(reportElement);
+      });
+
+      downloadPdfButton.style.display = 'inline-block';
+      showToast('Preview laporan siap.', 'success');
+    });
+
+    downloadPdfButton.addEventListener('click', async () => {
+      if (!loggedInUser) {
+        showToast('Harap login terlebih dahulu.', 'danger');
+        return;
+      }
+      const startDate = printStartDate.value;
+      const endDate = printEndDate.value;
+
+      if (pdfPreviewContainer.children.length === 0 || pdfPreviewContainer.querySelector('.empty-state')) {
+          showToast('Harap tampilkan laporan terlebih dahulu untuk membuat PDF.', 'danger');
+          return;
+      }
+
+      showToast('Mulai membuat PDF...', 'primary');
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('p', 'mm', 'a4');
+
+      const margin = 10;
+      let yOffset = margin;
+      const lineHeight = 7;
+      const maxPageHeight = doc.internal.pageSize.height - margin;
+
+      doc.setFontSize(16);
+      doc.text(`Laporan Harian Kos Baik.com`, doc.internal.pageSize.width / 2, yOffset, { align: 'center' });
+      yOffset += lineHeight;
+      doc.setFontSize(12);
+      doc.text(`Pengurus: ${loggedInUser}`, doc.internal.pageSize.width / 2, yOffset, { align: 'center' });
+      yOffset += lineHeight;
+      doc.text(`Periode: ${new Date(startDate).toLocaleDateString('id-ID')} - ${new Date(endDate).toLocaleDateString('id-ID')}`, doc.internal.pageSize.width / 2, yOffset, { align: 'center' });
+      yOffset += lineHeight * 2;
+
+      const reportItems = pdfPreviewContainer.querySelectorAll('.pdf-report-item');
+
+      for (const item of reportItems) {
+        const tanggalText = item.querySelector('p:nth-of-type(1)').textContent;
+        const jamKerjaText = item.querySelector('p:nth-of-type(2)').textContent;
+        const keteranganText = item.querySelector('p:nth-of-type(3)').textContent;
+        const imgElement = item.querySelector('img');
+
+        const requiredHeight = lineHeight * 3 + (imgElement ? 40 : 0) + 5;
+        if (yOffset + requiredHeight > maxPageHeight) {
+          doc.addPage();
+          yOffset = margin;
+        }
+
+        doc.setFontSize(10);
+        doc.setFont(undefined, 'bold');
+        doc.text(tanggalText, margin, yOffset);
+        yOffset += lineHeight;
+        doc.text(jamKerjaText, margin, yOffset);
+        yOffset += lineHeight;
+        doc.setFont(undefined, 'normal');
+        
+        const splitKeterangan = doc.splitTextToSize(keteranganText, doc.internal.pageSize.width - (margin * 2));
+        doc.text(splitKeterangan, margin, yOffset);
+        yOffset += (splitKeterangan.length * lineHeight) + 2;
+
+        if (imgElement && imgElement.src && imgElement.src !== '#') {
+          try {
+            const imgData = imgElement.src;
+            const imgProps = doc.getImageProperties(imgData);
+            const imgWidth = 50;
+            const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+            if (yOffset + imgHeight > maxPageHeight) {
+              doc.addPage();
+              yOffset = margin;
+            }
+            doc.addImage(imgData, 'JPEG', margin, yOffset, imgWidth, imgHeight);
+            yOffset += imgHeight + 5;
+          } catch (e) {
+            console.error("Error adding image to PDF:", e);
+            showToast('Gagal menambahkan gambar ke PDF. Laporan mungkin tidak lengkap.', 'warning');
+          }
+        }
+        yOffset += 5;
+      }
+
+      const filename = `Laporan_KosBaik_${loggedInUser}_${startDate}_${endDate}.pdf`;
+      doc.save(filename);
+      showToast('PDF berhasil diunduh!', 'success');
+    });
+
+
+    // --- Global Data Management Functions ---
+
+    backupUserDataBtn.addEventListener('click', () => {
+      if (!loggedInUser) {
+        showToast('Harap login terlebih dahulu untuk backup data Anda.', 'danger');
+        return;
+      }
+      const userReportsToBackup = laporanRiwayat[loggedInUser] || [];
+      
+      const backupData = { 
+          user: loggedInUser,
+          reports: userReportsToBackup
+      };
+
+      const dataStr = JSON.stringify(backupData, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `kosbaik_backup_${loggedInUser}_${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Data Anda berhasil di-backup!', 'success');
+    });
+
+    restoreUserDataBtn.addEventListener('click', () => {
+      if (!loggedInUser) {
+        showToast('Harap login terlebih dahulu untuk restore data Anda.', 'danger');
+        return;
+      }
+
+      const file = restoreInput.files[0];
+      if (!file) {
+        showToast('Pilih file JSON untuk di-restore.', 'danger');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const restoredData = JSON.parse(e.target.result);
+          
+          // Validate structure for user-specific backup
+          if (restoredData.user && Array.isArray(restoredData.reports)) {
+              if (restoredData.user !== loggedInUser) {
+                  showToast(`File backup ini milik pengguna ${restoredData.user}, bukan ${loggedInUser}. Data tidak dapat dipulihkan.`, 'danger');
+                  return;
+              }
+
+              if (confirm(`Ini akan mengganti semua laporan yang ada untuk ${loggedInUser} dengan data dari file backup ini. Lanjutkan?`)) {
+                  laporanRiwayat[loggedInUser] = restoredData.reports;
+                  saveLaporanRiwayat();
+                  displayRiwayatLaporan();
+                  updateDashboard();
+                  showToast('Data Anda berhasil di-restore!', 'success');
+                  updateNotifications('Data laporan Anda telah di-restore dari backup.');
+              }
+          } else {
+            showToast('Format file JSON tidak valid atau bukan file backup KosBaik. Harap pilih file backup yang benar.', 'danger');
+          }
+        } catch (error) {
+          showToast('Terjadi kesalahan saat membaca file JSON. Pastikan formatnya benar.', 'danger');
+          console.error('Error parsing JSON:', error);
+        }
+      };
+      reader.onerror = () => {
+        showToast('Gagal membaca file.', 'danger');
+      };
+      reader.readAsText(file);
+    });
+
+    deleteAllReportsGlobalBtn.addEventListener('click', () => {
+      if (confirm('Anda yakin ingin menghapus SEMUA laporan dari SEMUA pengurus? Tindakan ini tidak dapat dibatalkan.')) {
+        laporanRiwayat = {}; // Clear all reports for all users
+        saveLaporanRiwayat();
+        // Logout user after global delete
+        logoutUser(); // This will also refresh the UI to login screen
+        showToast('Semua laporan (global) berhasil dihapus.', 'success');
+        updateNotifications('SEMUA laporan telah dihapus secara global.');
+      }
+    });
+
+
+    // --- Login/Logout Functions ---
+
+    function showLoginScreen() {
+        loginContainer.style.display = 'block';
+        mainAppWrapper.style.display = 'none';
+        loggedInUser = null;
+        localStorage.removeItem('loggedInUser'); // Clear loggedInUser from localStorage
+        loginPasswordInput.value = ''; // Clear password field
+        loginErrorDisplay.style.display = 'none';
+        loginUsernameSelect.value = ''; // Reset username select
+        headerAvatar.textContent = '-';
+        headerAvatar.style.backgroundColor = getCssVariable('--gray'); // Reset avatar color
+        loggedInUserNameDisplay.textContent = ''; // Clear displayed user name
+
+        // Reset UI elements to empty states
+        document.getElementById('dashboard-total-reports').textContent = '0';
+        document.getElementById('dashboard-total-hours').textContent = '0';
+        document.getElementById('dashboard-last-report').textContent = 'Belum ada';
+        if (monthlyReportsChartInstance) {
+          monthlyReportsChartInstance.destroy();
+          monthlyReportsChartInstance = null;
+        }
+        recentActivityContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-clipboard"></i>
+            <p>Belum ada laporan dari Anda.</p>
+          </div>
+        `;
+        riwayatLaporanContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-folder-open"></i>
+            <p>Silakan login terlebih dahulu untuk melihat riwayat laporan Anda.</p>
+          </div>
+        `;
+        pdfPreviewContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-info-circle"></i>
+            <p>Pilih pengurus di header, lalu pilih rentang tanggal dan klik "Tampilkan Laporan" untuk melihat preview laporan.</p>
+          </div>
+        `;
+        downloadPdfButton.style.display = 'none'; // Hide download button
+        clearForm(); // Clear report form data
+        notificationsContainer.innerHTML = `
+          <div class="empty-state-small">
+            <i class="fas fa-bell-slash"></i>
+            <p>Belum ada aktivitas</p>
+          </div>
+        `; // Clear notifications
+    }
+
+    function showMainApp(username) {
+        loginContainer.style.display = 'none';
+        mainAppWrapper.style.display = 'block';
+        
+        loggedInUser = username;
+        localStorage.setItem('loggedInUser', username);
+
+        headerAvatar.textContent = username.charAt(0).toUpperCase();
+        headerAvatar.style.backgroundColor = getCssVariable('--primary');
+        loggedInUserNameDisplay.textContent = username; // Display full name
+        namaField.value = username; // Pre-fill report form 'nama' field
+
+        // Ensure user's report array exists when they log in
+        if (!laporanRiwayat[username]) {
+            laporanRiwayat[username] = [];
+            saveLaporanRiwayat();
+        }
+
+        activateTab('dashboard'); // Go to dashboard after login
+        updateDashboard(); // Update dashboard for logged-in user
+        // No need to call displayRiwayatLaporan explicitly here, activateTab handles it.
+    }
+
+    loginButton.addEventListener('click', () => {
+        const username = loginUsernameSelect.value;
+        const password = loginPasswordInput.value;
+
+        if (!username || !password) {
+            loginErrorDisplay.textContent = 'Nama pengurus dan password harus diisi.';
+            loginErrorDisplay.style.display = 'block';
+            return;
+        }
+
+        if (userPasswords[username] === password) {
+            loginErrorDisplay.style.display = 'none';
+            showMainApp(username);
+            showToast(`Selamat datang, ${username}!`, 'success');
+        } else {
+            loginErrorDisplay.textContent = 'Nama pengurus atau password salah.';
+            loginErrorDisplay.style.display = 'block';
+        }
+    });
+
+    logoutButton.addEventListener('click', () => {
+        if (confirm('Anda yakin ingin logout?')) {
+            logoutUser();
+        }
+    });
+
+    function logoutUser() {
+        showLoginScreen();
+        showToast('Anda telah logout.', 'info');
+    }
+
+
+    // --- Initial Load Logic ---
+    navTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Ensure user is logged in before navigating
+        if (!loggedInUser) {
+            showToast('Harap login terlebih dahulu.', 'danger');
+            return;
+        }
+        const target = document.querySelector(tab.dataset.tabTarget);
+        contentSections.forEach(section => section.classList.remove('active'));
+        navTabs.forEach(t => t.classList.remove('active'));
+        target.classList.add('active');
+        tab.classList.add('active');
+
+        // Specific actions on tab change
+        if (tab.dataset.tabTarget === '#riwayat') {
+          displayRiwayatLaporan();
+        } else if (tab.dataset.tabTarget === '#dashboard') {
+          updateDashboard();
+        } else if (tab.dataset.tabTarget === '#lapor') {
+          if (!editingReportId) {
+            clearForm();
+          }
+          namaField.value = loggedInUser; // Ensure nama field is pre-filled
+        }
+      });
+    });
+
+    function activateTab(tabId) {
+      // Find the tab element and simulate click
+      const targetTab = document.querySelector(`.nav-tabs li[data-tab-target="#${tabId}"]`);
+      if (targetTab) {
+        targetTab.click();
+      }
+    }
+
+    // Set default date for print/history filters
+    const today = new Date().toISOString().split('T')[0];
+    printStartDate.value = today;
+    printEndDate.value = today;
+    historyStartDate.value = today;
+    historyEndDate.value = today;
+
+    // Check login state on page load
+    window.onload = () => {
+      if (loggedInUser) {
+        showMainApp(loggedInUser);
+      } else {
+        showLoginScreen();
+      }
+    };
+
+    // Removed the populate login select with predefined users loop
+    // as the options are now directly in the HTML.
+  </script>
+</body>
+</html>
